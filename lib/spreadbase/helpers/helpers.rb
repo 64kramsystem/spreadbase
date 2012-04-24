@@ -24,6 +24,23 @@ module SpreadBase # :nodoc:
   #
   module Helpers
 
+    # Safe alternative to "[ instance ] * repeats", which returns an array filled with the same instance, which is a recipe for a disaster
+    #
+    # The instance is duplicated Object#clone, when necessary - note that this method is not meant to do a deep copy.
+    #
+    def make_array_from_repetitions( instance, repetitions )
+      ( 1 .. repetitions ).inject( [] ) do | cumulative_result, i |
+        case instance
+        when Fixnum, Float, BigDecimal, Date, Time, TrueClass, FalseClass, NilClass #, DateTime is a Date
+          cumulative_result << instance
+        when String, Array
+          cumulative_result << instance.clone
+        else
+          raise "Unsupported class: #{ }"
+        end
+      end
+    end
+
     # Prints the 2d-array in a nice, fixed-space table
     #
     # _params_:

@@ -31,6 +31,8 @@ module SpreadBase # :nodoc:
       #
       module Decoding
 
+        include SpreadBase::Helpers
+
         private
 
         # Returns a Document instance.
@@ -83,21 +85,23 @@ module SpreadBase # :nodoc:
         end
 
         def decode_column_width_style( column_node )
-          repeats    = column_node.attributes[ 'table:number-columns-repeated' ] || '1'
-          style_name = column_node.attributes[ 'table:style-name' ]
+          repetitions = ( column_node.attributes[ 'table:number-columns-repeated' ] || '1' ).to_i
+          style_name  = column_node.attributes[ 'table:style-name' ]
 
-          [ style_name ] * repeats.to_i
+          # WATCH OUT! See module note
+          #
+          make_array_from_repetitions( style_name, repetitions )
         end
 
         def decode_row_node( row_node, options )
-          repeats    = row_node.attributes[ 'table:number-rows-repeated' ] || '1'
-          cell_nodes = row_node.elements.to_a( 'table:table-cell' )
+          repetitions = ( row_node.attributes[ 'table:number-rows-repeated' ] || '1' ).to_i
+          cell_nodes  = row_node.elements.to_a( 'table:table-cell' )
 
           # Watch out the :flatten; a single cell can represent multiple cells (table:number-columns-repeated)
           #
           values = cell_nodes.map { | node | decode_cell_node( node, options ) }.flatten
 
-          [ values ] * repeats.to_i
+          make_array_from_repetitions( values, repetitions )
         end
 
         def decode_cell_node( cell_node, options )
@@ -148,12 +152,15 @@ module SpreadBase # :nodoc:
               raise "Unrecognized value type found in a cell: #{ value_type }"
             end
 
-          repeats = cell_node.attributes[ 'table:number-columns-repeated' ] || '1'
+          repetitions = ( cell_node.attributes[ 'table:number-columns-repeated' ] || '1' ).to_i
 
-          [ value ] * repeats.to_i
+          make_array_from_repetitions( value, repetitions )
         end
 
       end
+
+      private
+
 
     end
 
