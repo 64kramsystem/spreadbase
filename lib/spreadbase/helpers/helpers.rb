@@ -54,7 +54,8 @@ module SpreadBase # :nodoc:
     # +row_prefix+::            Prefix this string to each row.
     # +with_header+::           First row will be separated from the remaining ones.
     #
-    # +formatting_block+::      If passed, values will be formatted by the block; otherwise, #inspect will be called.
+    # +formatting_block+::      If passed, values will be formatted by the block.
+    #                           If no block is passed, or it returns nil or :standard, the standard formatting is used.
     #
     def pretty_print_rows( rows, options={}, &formatting_block )
       row_prefix   = options[ :row_prefix   ] || ''
@@ -90,7 +91,27 @@ module SpreadBase # :nodoc:
           formatted_row_values = ( 0 ... max_column_sizes.size ).map do | column_index |
             value = row[ column_index ]
 
-            block_given? ? yield( value ) : value.inspect
+            custom_result = block_given? && yield( value )
+
+            if custom_result && custom_result != :standard
+              custom_result
+            else
+              case value
+              when BigDecimal
+                value.to_s( 'F' )
+              when Time, DateTime
+                # Time#to_s renders differently between 1.8.7 and 1.9.3; 1.8.7's rendering is bizarrely
+                # inconsistent with the Date and DateTime ones.
+                #
+                value.strftime( '%Y-%m-%d %H:%M:%S %z' )
+              when String, Date, Numeric, TrueClass, FalseClass
+                value.to_s
+              when nil
+                "NIL"
+              else
+                value.inspect
+              end
+            end
           end
 
           output << row_prefix << print_pattern % formatted_row_values << "\n"

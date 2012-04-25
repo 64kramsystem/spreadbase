@@ -209,25 +209,7 @@ module SpreadBase # :nodoc:
     # _returns_ a matrix representation of the tables, with the values being separated by commas.
     #
     def to_s( options={} )
-      pretty_print_rows( @data, options ) do | value |
-        case value
-        when BigDecimal
-          value.to_s( 'F' )
-        when Time
-          # :to_s renders differently between 1.8.7 and 1.9.3.
-          # 1.8.7's rendering is bizarrely inconsistent with the Date and DateTime ones.
-          #
-          value.strftime( '%Y-%m-%d %H:%M:%S %z' )
-        when String, Date, Numeric
-          value.to_s
-        when true, false
-          value.to_s
-        when nil
-          nil.inspect
-        else
-          raise "Invalid data type: #{ value }"
-        end
-      end
+      pretty_print_rows( @data, options )
     end
 
     private
