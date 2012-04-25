@@ -8,11 +8,6 @@ What is SpreadBase©?
 
 SpreadBase© is a set of APIs for programmatically accessing spreadsheets (currently, only OpenDocument 1.2).
 
-Warning!!!
-----------
-
-This document is based on the frozen API of the first version (0.1), which is going to be released on Tue 2012/04/24.
-
 Usage
 -----
 
@@ -137,7 +132,7 @@ http://www.kiva.org/invitedby/saveriomiroddi
 
 it will cost you **nothing** (zero/0 €/£/$), it will take three to five minutes of your time, and you will have actively done something for economically disadvantaged countries.
 
-If you want to do more, in addition to accepting the invitation, you can donate to my Paypal account (saverio.pub2 \<a-hat!\> gmail.com) - I will punlish your donation and use the entire amount for making loans using the mentioned website.
+If you want to do more, in addition to accepting the invitation, you can donate to my Paypal account (saverio.pub2 \<a-hat!\> gmail.com) - I will publish your donation and use the entire amount for making loans using the mentioned website.
 
 Roadmap/Todo
 ------------

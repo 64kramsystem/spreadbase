@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.email       = [ "saverio.pub2@gmail.com" ]
   s.homepage    = ""
   s.summary     = %q{Library for reading/writing OpenOffice Calc documents.}
-  s.description = %q{In addition to the summary, it also prepare the coffee. Many times a day!!}
+  s.description = %q{Library for reading/writing OpenOffice Calc documents.}
 
   s.add_runtime_dependency     "zipruby", "~>0.3.6"
   s.add_development_dependency "rspec",   "~>2.9.0"
