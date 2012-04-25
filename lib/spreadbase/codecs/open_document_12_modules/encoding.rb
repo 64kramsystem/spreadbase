@@ -70,6 +70,7 @@ module SpreadBase # :nodoc:
   </number:date-style>
   <style:style style:name='date' style:family='table-cell' style:data-style-name='N37'/>
   <style:style style:name='datetime' style:family='table-cell' style:data-style-name='N5050'/>
+  <style:style style:name='boolean' style:family='table-cell' style:data-style-name='N99'/>
 </office:automatic-styles>
 <office:body>
   <office:spreadsheet/>
@@ -180,6 +181,7 @@ module SpreadBase # :nodoc:
             cell_node.attributes[ 'office:value' ] = value.to_s
           when true, false
             cell_node.attributes[ 'office:value-type' ] = 'boolean'
+            cell_node.attributes[ 'table:style-name'  ] = 'boolean'
 
             cell_node.attributes[ 'office:boolean-value' ] = value.to_s
           when nil
