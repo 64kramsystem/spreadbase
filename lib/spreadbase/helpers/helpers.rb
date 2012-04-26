@@ -72,7 +72,7 @@ module SpreadBase # :nodoc:
 
         rows.each do | values |
           values.each_with_index do | value, i |
-            formatted_value       = block_given? ? yield( value ) : value.inspect
+            formatted_value       = pretty_print_value( value, &formatting_block )
             formatted_value_width = formatted_value.chars.to_a.size
 
             max_column_sizes[ i ] = formatted_value_width if formatted_value_width > max_column_sizes[ i ]
@@ -91,27 +91,7 @@ module SpreadBase # :nodoc:
           formatted_row_values = ( 0 ... max_column_sizes.size ).map do | column_index |
             value = row[ column_index ]
 
-            custom_result = block_given? && yield( value )
-
-            if custom_result && custom_result != :standard
-              custom_result
-            else
-              case value
-              when BigDecimal
-                value.to_s( 'F' )
-              when Time, DateTime
-                # Time#to_s renders differently between 1.8.7 and 1.9.3; 1.8.7's rendering is bizarrely
-                # inconsistent with the Date and DateTime ones.
-                #
-                value.strftime( '%Y-%m-%d %H:%M:%S %z' )
-              when String, Date, Numeric, TrueClass, FalseClass
-                value.to_s
-              when nil
-                "NIL"
-              else
-                value.inspect
-              end
-            end
+            pretty_print_value( value, &formatting_block )
           end
 
           output << row_prefix << print_pattern % formatted_row_values << "\n"
@@ -125,6 +105,32 @@ module SpreadBase # :nodoc:
       end
 
       output
+    end
+
+    private
+
+    def pretty_print_value( value, &formatting_block )
+      custom_result = block_given? && yield( value )
+
+      if custom_result && custom_result != :standard
+        custom_result
+      else
+        case value
+        when BigDecimal
+          value.to_s( 'F' )
+        when Time, DateTime
+          # Time#to_s renders differently between 1.8.7 and 1.9.3; 1.8.7's rendering is bizarrely
+          # inconsistent with the Date and DateTime ones.
+          #
+          value.strftime( '%Y-%m-%d %H:%M:%S %z' )
+        when String, Date, Numeric, TrueClass, FalseClass
+          value.to_s
+        when nil
+          "NIL"
+        else
+          value.inspect
+        end
+      end
     end
 
   end

@@ -1,4 +1,4 @@
-# encoding: UTF-8
+ # encoding: UTF-8
 
 =begin
 Copyright 2012 Saverio Miroddi saverio.pub2 <a-hat!> gmail.com
@@ -236,10 +236,32 @@ describe SpreadBase::Table do
     ]
   end
 
-  it "return the data as string (:to_s)" #
+  it "return the data as string (:to_s)" do
+    expected_string = "\
++------------+---------------------------+---------------------------+
+| 1          | 1.1                       | 0.133E1                   |
+| 2012-04-10 | 2012-04-11T23:33:42+00:00 | 2012-04-11 23:33:42 +0200 |
+| true       | a                         |                           |
++------------+---------------------------+---------------------------+
+"
+    @sample_table.to_s.should == expected_string
+  end
 
-  it "return the data as string, with headers (:to_s)" #
+  it "return the data as string, with headers (:to_s)" do
+    expected_string = "\
++------------+---------------------------+---------------------------+
+| 1          | 1.1                       | 0.133E1                   |
++------------+---------------------------+---------------------------+
+| 2012-04-10 | 2012-04-11T23:33:42+00:00 | 2012-04-11 23:33:42 +0200 |
+| true       | a                         |                           |
++------------+---------------------------+---------------------------+
+"
 
-  it "should handle the column widths?"
+    @sample_table.to_s( :with_headers => true ).should == expected_string
+
+    @sample_table.data = []
+
+    @sample_table.to_s( :with_headers => true ).should == ""
+  end
 
 end

@@ -191,14 +191,6 @@ module SpreadBase # :nodoc:
           end
         end
 
-        def encode_to_utf8( string )
-          if RUBY_VERSION >= '1.9'
-            value.encode( 'UTF-8' )
-          else
-            Iconv.conv( 'utf-8', 'utf-8', string )
-          end
-        end
-
       end
 
     end

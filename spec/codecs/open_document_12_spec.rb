@@ -30,7 +30,7 @@ include SpecHelpers
 #
 describe SpreadBase::Codecs::OpenDocument12 do
 
-  before :all do
+  before :each do
     table_1 = SpreadBase::Table.new(
       'abc', [
         [ 1,      1.1,        T_BIGDECIMAL ],
@@ -108,10 +108,30 @@ describe SpreadBase::Codecs::OpenDocument12 do
     assert_size( document.tables, 2 )
   end
 
-  it "should handle the column widths"
+  # If values are not converted to UTF-8, some encodings cause an error to be
+  # raised when assigning a value to a cell.
+  #
+  # 1.8 tests can't be done, since the official platform is 1.9
+  #
+  it "should convert to utf-8 before saving" do
+    string = "à".encode( 'UTF-16' )
 
-  it "should handle utf-8: convert: 1.9 valid, 1.8 valid, 1.8 invalid"
+    @sample_document.tables[ 0 ][ 0,  0 ] = string
 
-  it "should test :floats_as_bigdecimal to false"
+    # Doesn't encode correctly if the value is not converted
+    #
+    SpreadBase::Codecs::OpenDocument12.new.encode_to_content_xml( @sample_document )
+  end
+
+  it "should decode as BigDecimal" do
+    content_xml = SpreadBase::Codecs::OpenDocument12.new.encode_to_content_xml( @sample_document )
+
+    document = SpreadBase::Codecs::OpenDocument12.new.decode_content_xml( content_xml, :floats_as_bigdecimal => true )
+
+    value = document.tables[ 0 ][ 2, 0 ]
+
+    value.should be_a( BigDecimal )
+    value.should == T_BIGDECIMAL
+  end
 
 end

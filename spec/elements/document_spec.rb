@@ -27,7 +27,15 @@ describe SpreadBase::Document do
 
   before :each do
     @sample_document = SpreadBase::Document.new
-    @sample_document.tables = [ SpreadBase::Table.new( 'abc', [] ) ]
+    @sample_document.tables = [
+      SpreadBase::Table.new(
+        'abc', [
+          [ 1,      1.1,        T_BIGDECIMAL ],
+          [ T_DATE, T_DATETIME, T_TIME       ],
+          [ true,   'a',        nil          ]
+        ]
+      )
+    ]
   end
 
   # :-D
@@ -53,7 +61,7 @@ describe SpreadBase::Document do
 
     assert_size( document.tables, 1 ) do | table |
       table.name.should == 'abc'
-      table.data.should be_empty
+      table.data.size.should == 3
     end
   end
 
@@ -92,10 +100,35 @@ describe SpreadBase::Document do
     lambda { document.save }.should raise_error( RuntimeError, "At least one table must be present" )
   end
 
-  it "should return the data as string (:to_s)" #
+  it "should return the data as string (:to_s)" do
+    expected_string = "\
+abc:
 
-  it "should return the data as string, with headers (:to_s)" #
+  +------------+---------------------------+---------------------------+
+  | 1          | 1.1                       | 0.133E1                   |
+  | 2012-04-10 | 2012-04-11T23:33:42+00:00 | 2012-04-11 23:33:42 +0200 |
+  | true       | a                         |                           |
+  +------------+---------------------------+---------------------------+
 
-  it "should handle the column widths?"
+"
+
+    @sample_document.to_s.should == expected_string
+  end
+
+  it "should return the data as string, with headers (:to_s)" do
+    expected_string = "\
+abc:
+
+  +------------+---------------------------+---------------------------+
+  | 1          | 1.1                       | 0.133E1                   |
+  +------------+---------------------------+---------------------------+
+  | 2012-04-10 | 2012-04-11T23:33:42+00:00 | 2012-04-11 23:33:42 +0200 |
+  | true       | a                         |                           |
+  +------------+---------------------------+---------------------------+
+
+"
+
+    @sample_document.to_s( :with_headers => true ).should == expected_string
+  end
 
 end
