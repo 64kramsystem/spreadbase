@@ -90,7 +90,7 @@ module SpreadBase # :nodoc:
     #
     # _params_:
     #
-    # +row_index+::                  int (0-based). see notes about the rows indexing.
+    # +row_index+::                  int or range (0-based). see notes about the rows indexing.
     #
     def row( row_index )
       check_row_index( row_index )
@@ -104,9 +104,9 @@ module SpreadBase # :nodoc:
     #
     # _params_:
     #
-    # +row_index+::                  int (0-based). see notes about the rows indexing.
+    # +row_index+::                  int or range (0-based). see notes about the rows indexing.
     #
-    # _returns_ the deleted row
+    # _returns_ the deleted row[s]
     #
     def delete_row( row_index )
       check_row_index( row_index )
@@ -141,35 +141,60 @@ module SpreadBase # :nodoc:
     #
     # _params_:
     #
-    # +column_indentifier+::         either an int (0-based) or the excel-format identifier (AA...).
+    # +column_indentifier+::         for single access, us either an int (0-based) or the excel-format identifier (AA...).
     #                                when int, follow the same idea of the rows indexing (ruby semantics).
+    #                                for multiple access, use a range either of int or excel-format identifiers - pay attention, because ( 'A'..'c' ) is not semantically correct.
+    #                                interestingly, ruby letter ranges convention is the same as the excel columns one.
     #
     def column( column_identifier )
-      column_index = decode_column_identifier( column_identifier )
+      if column_identifier.is_a?( Range )
+        min_index = decode_column_identifier( column_identifier.min )
+        max_index = decode_column_identifier( column_identifier.max )
 
-      @data.map do | row |
-        row[ column_index ]
+        ( min_index .. max_index ).map do | column_index |
+          @data.map do | row |
+            row[ column_index ]
+          end
+        end
+      else
+        column_index = decode_column_identifier( column_identifier )
+
+        @data.map do | row |
+          row[ column_index ]
+        end
       end
     end
 
     # Deletes a column.
     #
-    # WATCH OUT! This method doesn't have the range restrictions that axis indexes generally has, that is, it's possible to delete a column outside the boundaries of the rows - it will return nil for each of those values.
+    # See Table#column for the indexing notes.
     #
     # _params_:
     #
-    # +column_indentifier+::         either an int (0-based) or the excel-format identifier (AA...).
-    #                                when int, follow the same idea of the rows indexing (ruby semantics).
+    # +column_indentifier+::         See Table#column
     #
     # _returns_ the deleted column
     #
     def delete_column( column_identifier )
-      column_index = decode_column_identifier( column_identifier )
+      if column_identifier.is_a?( Range )
+        min_index = decode_column_identifier( column_identifier.min )
+        max_index = decode_column_identifier( column_identifier.max )
 
-      @column_width_styles.slice!( column_index )
+        reverse_result = max_index.downto( min_index ).map do | column_index |
+          @data.map do | row |
+            row.slice!( column_index )
+          end
+        end
 
-      @data.map do | row |
-        row.slice!( column_index )
+        reverse_result.reverse
+      else
+        column_index = decode_column_identifier( column_identifier )
+
+        @column_width_styles.slice!( column_index )
+
+        @data.map do | row |
+          row.slice!( column_index )
+        end
       end
     end
 
@@ -225,6 +250,8 @@ module SpreadBase # :nodoc:
       allow_append = options [ :allow_append ]
 
       positive_limit = allow_append ? @data.size : @data.size - 1
+
+      row_index = row_index.max if row_index.is_a?( Range )
 
       raise "Invalid row index (#{ row_index }) - allowed 0 to #{ positive_limit }" if row_index < 0 || row_index > positive_limit
     end

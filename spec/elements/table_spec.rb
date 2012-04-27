@@ -102,6 +102,15 @@ describe SpreadBase::Table do
     lambda { @sample_table.row( -1 ) }.should raise_error( RuntimeError, "Invalid row index (-1) - allowed 0 to 2" )
   end
 
+  it "should access a set of rows by range" do
+    @sample_table.row( ( 0 .. 1 ) ).should == [
+      [ 1,      1.1,        T_BIGDECIMAL ],
+      [ T_DATE, T_DATETIME, T_TIME       ],
+    ]
+
+    lambda { @sample_table.row( ( 0 .. 5 ) ) }.should raise_error( RuntimeError, "Invalid row index (5) - allowed 0 to 2" )
+  end
+
   it "should delete a row" do
     @sample_table.delete_row( 1 ).should == [ T_DATE, T_DATETIME, T_TIME ]
 
@@ -111,6 +120,19 @@ describe SpreadBase::Table do
     ]
 
     lambda { @sample_table.delete_row( -1 ) }.should raise_error( RuntimeError, "Invalid row index (-1) - allowed 0 to 1" )
+  end
+
+  it "should delete a set of rows by range" do
+    @sample_table.delete_row( ( 0 .. 1 ) ).should == [
+      [ 1,      1.1,        T_BIGDECIMAL ],
+      [ T_DATE, T_DATETIME, T_TIME       ],
+    ]
+
+    @sample_table.data.should == [
+      [ true,   'a',        nil          ]
+    ]
+
+    lambda { @sample_table.delete_row( ( 0 .. 5 ) ) }.should raise_error( RuntimeError, "Invalid row index (5) - allowed 0 to 0" )
   end
 
   it "should insert a row" do
@@ -152,6 +174,18 @@ describe SpreadBase::Table do
     @sample_table.column( 3 ).should == [ nil, nil, nil ]
   end
 
+  it "should access a set of columns by range" do
+    @sample_table.column( ( 0 .. 1 ) ).should == [
+      [ 1,   T_DATE,     true ],
+      [ 1.1, T_DATETIME, 'a'  ],
+    ]
+
+    @sample_table.column( ( 'C' .. 'D' ) ).should == [
+      [ T_BIGDECIMAL, T_TIME, nil ],
+      [ nil,          nil,    nil ],
+    ]
+  end
+
   it "should delete a column" do
     @sample_table.column_width_styles = [ 'abc', nil, 'cde' ]
 
@@ -167,6 +201,19 @@ describe SpreadBase::Table do
       [ 1.1,        T_BIGDECIMAL ],
       [ T_DATETIME, T_TIME       ],
       [ 'a',        nil          ]
+    ]
+  end
+
+  it "should delete a set of columns by range" do
+    @sample_table.delete_column( ( 0 .. 1 ) ).should == [
+      [ 1,   T_DATE, true ],
+      [ 1.1, T_DATETIME, 'a'  ],
+    ]
+
+    @sample_table.data.should == [
+      [ T_BIGDECIMAL ],
+      [ T_TIME       ],
+      [ nil          ],
     ]
   end
 

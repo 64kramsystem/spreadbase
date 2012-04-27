@@ -53,6 +53,27 @@ Append a row:
 
     table_2.append_row( [ 'Fabrizio F.' ] )
 
+Read a column, or a range of columns:
+
+    table.column( 0 )
+
+    # [ 'Dish', 'Roasted 6502', '8080, with an 8-bit bus', '65000 with side dishes of Copper and Blitter' ]
+
+    table.column( 0 .. 1 )
+
+    # [ [ 'Dish',  'Roasted 6502', '8080, with an 8-bit bus', '65000 with side dishes of Copper and Blitter' ],
+    #   [ 'Price', 38.911,         8,                         512.0                                          ] ]
+
+Read a row, or a range of rows:
+
+    table.row( 1 )
+
+    # [ 'Roasted 6502', 38.911 ]
+
+    table.row( 1 .. 2 )
+
+    # [ [ 'Roasted 6502', 38.911 ], [ '8080, with an 8-bit bus', 8 ] ]
+
 Read a cell:
 
     price_8080 = document.tables[ 0 ][ 1, 2 ]
@@ -100,6 +121,8 @@ Print a document:
 Save the document:
 
     document.save
+
+Enjoy many other APIs.
 
 Notes
 -----
