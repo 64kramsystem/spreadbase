@@ -32,7 +32,7 @@ module SpreadBase # :nodoc:
 
     include SpreadBase::Helpers
 
-    attr_accessor :name, :data
+    attr_accessor :name
 
     # Array of style names; nil when not associated to any column width.
     #
@@ -41,14 +41,22 @@ module SpreadBase # :nodoc:
     # _params_:
     #
     # +name+::                       (required) Name of the table
-    # +data+::                       (Array.new) 2d matrix of the data. if not empty, the rows need to be all of the same size
+    # +raw_data+::                   (Array.new) 2d matrix of the data. if not empty, the rows need to be all of the same size
     #
-    def initialize( name, data=[] )
+    def initialize( name, raw_data=[] )
       raise "Table name required" if name.nil? || name == ''
 
       @name                = name
-      @data                = data
+      self.data            = raw_data
       @column_width_styles = []
+    end
+
+    def data=( the_data )
+      @data = the_data.map { | the_row | array_to_cells( the_row ) }
+    end
+
+    def data( options={} )
+      @data.map { | the_row | the_row.map { | cell | cell_to_value( cell, options ) } }
     end
 
     # Access a cell value.
@@ -60,13 +68,14 @@ module SpreadBase # :nodoc:
     #
     # _returns_ the value, which is automatically converted to the Ruby data type.
     #
-    def []( column_identifier, row_index )
-      row          = row( row_index )
+    def []( column_identifier, row_index, options={} )
+      the_row = row( row_index, options )
+
       column_index = decode_column_identifier( column_identifier )
 
-      check_column_index( row, column_index )
+      check_column_index( the_row, column_index )
 
-      row[ column_index ]
+      the_row[ column_index ]
     end
 
     # Writes a value in a cell.
@@ -78,12 +87,14 @@ module SpreadBase # :nodoc:
     # +value+::                      value
     #
     def []=( column_identifier, row_index, value )
-      row          = row( row_index )
+      check_row_index( row_index )
+
+      the_row      = @data[ row_index ]
       column_index = decode_column_identifier( column_identifier )
 
-      check_column_index( row, column_index )
+      check_column_index( the_row, column_index )
 
-      row[ column_index ] = value
+      the_row[ column_index ] = value_to_cell( value )
     end
 
     # Returns an array containing the values of a single row.
@@ -92,10 +103,14 @@ module SpreadBase # :nodoc:
     #
     # +row_index+::                  int or range (0-based). see notes about the rows indexing.
     #
-    def row( row_index )
+    def row( row_index, options={} )
       check_row_index( row_index )
 
-      @data[ row_index ]
+      if row_index.is_a?( Range )
+        @data[ row_index ].map { | row | cells_to_array( row, options ) }
+      else
+        cells_to_array( @data[ row_index ], options )
+      end
     end
 
     # Deletes a row.
@@ -111,7 +126,13 @@ module SpreadBase # :nodoc:
     def delete_row( row_index )
       check_row_index( row_index )
 
-      @data.slice!( row_index )
+      deleted_cells = @data.slice!( row_index )
+
+      if row_index.is_a?( Range )
+        deleted_cells.map { | row | cells_to_array( row ) }
+      else
+        cells_to_array( deleted_cells )
+      end
     end
 
     # Inserts a row.
@@ -126,7 +147,9 @@ module SpreadBase # :nodoc:
     def insert_row( row_index, row )
       check_row_index( row_index, :allow_append => true )
 
-      @data.insert( row_index, row )
+      cells = array_to_cells( row )
+
+      @data.insert( row_index, cells )
     end
 
     # This operation won't modify the column width styles in any case.
@@ -146,21 +169,25 @@ module SpreadBase # :nodoc:
     #                                for multiple access, use a range either of int or excel-format identifiers - pay attention, because ( 'A'..'c' ) is not semantically correct.
     #                                interestingly, ruby letter ranges convention is the same as the excel columns one.
     #
-    def column( column_identifier )
+    def column( column_identifier, options={} )
       if column_identifier.is_a?( Range )
         min_index = decode_column_identifier( column_identifier.min )
         max_index = decode_column_identifier( column_identifier.max )
 
         ( min_index .. max_index ).map do | column_index |
-          @data.map do | row |
-            row[ column_index ]
+          @data.map do | the_row |
+            cell = the_row[ column_index ]
+
+            cell_to_value( cell, options )
           end
         end
       else
         column_index = decode_column_identifier( column_identifier )
 
-        @data.map do | row |
-          row[ column_index ]
+        @data.map do | the_row |
+          cell = the_row[ column_index ]
+
+          cell_to_value( cell, options )
         end
       end
     end
@@ -182,7 +209,9 @@ module SpreadBase # :nodoc:
 
         reverse_result = max_index.downto( min_index ).map do | column_index |
           @data.map do | row |
-            row.slice!( column_index )
+            cell = row.slice!( column_index )
+
+            cell_to_value( cell )
           end
         end
 
@@ -193,7 +222,9 @@ module SpreadBase # :nodoc:
         @column_width_styles.slice!( column_index )
 
         @data.map do | row |
-          row.slice!( column_index )
+          cell = row.slice!( column_index )
+
+          cell_to_value( cell )
         end
       end
     end
@@ -217,10 +248,14 @@ module SpreadBase # :nodoc:
 
       if @data.size > 0
         @data.zip( column ).each do | row, value |
-          row.insert( column_index, value )
+          cell = value_to_cell( value )
+
+          row.insert( column_index, cell )
         end
       else
-        @data = column.map { | value | [ value ] }
+        @data = column.map do | value |
+          [ value_to_cell( value ) ]
+        end
       end
 
     end
@@ -234,10 +269,32 @@ module SpreadBase # :nodoc:
     # _returns_ a matrix representation of the tables, with the values being separated by commas.
     #
     def to_s( options={} )
-      pretty_print_rows( @data, options )
+      pretty_print_rows( data, options )
     end
 
     private
+
+    def array_to_cells( the_row )
+      the_row.map { | value | value_to_cell( value ) }
+    end
+
+    def value_to_cell( value )
+      value.is_a?( Cell ) ? value : Cell.new( value )
+    end
+
+    def cells_to_array( cells, options={} )
+      cells.map { | cell | cell_to_value( cell, options ) }
+    end
+
+    def cell_to_value( cell, options={} )
+      as_cell = options[ :as_cell ]
+
+      if as_cell
+        cell
+      else
+        cell.value if cell
+      end
+    end
 
     # Check that row index points to an existing record, or, in case of :allow_append,
     # point to one unit above the last row.

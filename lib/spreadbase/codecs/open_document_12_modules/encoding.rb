@@ -118,7 +118,7 @@ module SpreadBase # :nodoc:
           #
           table_node.add_element( 'table:table-column' ) if table.column_width_styles.size == 0
 
-          table.data.each do | row |
+          table.data( as_cell: true ).each do | row |
             encode_row( row, table_node, options )
           end
         end
@@ -132,8 +132,8 @@ module SpreadBase # :nodoc:
         def encode_row( row, table_node, options={} )
           row_node = table_node.add_element( 'table:table-row' )
 
-          row.each do | value |
-            encode_cell( value, row_node, options )
+          row.each do | cell |
+            encode_cell( cell.value, row_node, options )
           end
         end
 

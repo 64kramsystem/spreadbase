@@ -114,7 +114,7 @@ describe SpreadBase::Codecs::OpenDocument12 do
   # 1.8 tests can't be done, since the official platform is 1.9
   #
   it "should convert to utf-8 before saving" do
-    string = "à".encode( 'UTF-16' )
+    string = "à".encode( 'utf-16' )
 
     @sample_document.tables[ 0 ][ 0,  0 ] = string
 

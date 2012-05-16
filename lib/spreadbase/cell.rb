@@ -18,21 +18,22 @@ You should have received a copy of the GNU Lesser General Public License along
 with SpreadBase.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-require 'rubygems'
+module SpreadBase # :nodoc:
 
-require File.expand_path( '../spreadbase/helpers/helpers', __FILE__ )
+  # Represents the abstraction of a cell; values and their types are merged into a single entity.
+  #
+  class Cell
 
-require File.expand_path( '../spreadbase/document', __FILE__ )
-require File.expand_path( '../spreadbase/table',    __FILE__ )
-require File.expand_path( '../spreadbase/cell',     __FILE__ )
+    attr_accessor :value
 
-require File.expand_path( '../spreadbase/codecs/open_document_12_modules/encoding', __FILE__ )
-require File.expand_path( '../spreadbase/codecs/open_document_12_modules/decoding', __FILE__ )
-require File.expand_path( '../spreadbase/codecs/open_document_12',                  __FILE__ )
+    def initialize( value )
+      @value = value
+    end
 
-# = Spreadbase
-#
-# See https://github.com/saveriomiroddi/spreadbase for usage.
-#
-module SpreadBase
+    def ==( other )
+      other.is_a?( Cell ) && @value == other.value
+    end
+
+  end
+
 end

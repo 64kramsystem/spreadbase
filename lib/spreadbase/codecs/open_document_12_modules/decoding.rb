@@ -105,62 +105,62 @@ module SpreadBase # :nodoc:
         end
 
         def decode_cell_node( cell_node, options )
-          floats_as_bigdecimal = options[ :floats_as_bigdecimal ]
-
-          value_type = cell_node.attributes[ 'office:value-type' ]
-
-          value = \
-            case value_type
-            when 'string'
-              value_node = cell_node.elements[ 'text:p' ]
-
-              value_node.text
-            when 'date'
-              date_string = cell_node.attributes[ 'office:date-value' ]
-
-              if date_string =~ /T/
-                DateTime.strptime( date_string, '%Y-%m-%dT%H:%M:%S' )
-              else
-                Date.strptime( date_string, '%Y-%m-%d' )
-              end
-            when 'float', 'percentage'
-              float_string = cell_node.attributes[ 'office:value' ]
-
-              if float_string.include?( '.' )
-                if floats_as_bigdecimal
-                  BigDecimal.new( float_string )
-                else
-                  float_string.to_f
-                end
-              else
-                float_string.to_i
-              end
-            when 'boolean'
-              boolean_string = cell_node.attributes[ 'office:boolean-value' ]
-
-              case boolean_string
-              when 'true'
-                true
-              when 'false'
-                false
-              else
-                raise "Invalid boolean value: #{ boolean_string }"
-              end
-            when nil
-              nil
-            else
-              raise "Unrecognized value type found in a cell: #{ value_type }"
-            end
+          value = decode_cell_value( cell_node, options )
 
           repetitions = ( cell_node.attributes[ 'table:number-columns-repeated' ] || '1' ).to_i
 
           make_array_from_repetitions( value, repetitions )
         end
 
+        def decode_cell_value( cell_node, options )
+          floats_as_bigdecimal = options[ :floats_as_bigdecimal ]
+
+          value_type = cell_node.attributes[ 'office:value-type' ]
+
+          case value_type
+          when 'string'
+            value_node = cell_node.elements[ 'text:p' ]
+
+            value_node.text
+          when 'date'
+            date_string = cell_node.attributes[ 'office:date-value' ]
+
+            if date_string =~ /T/
+              DateTime.strptime( date_string, '%Y-%m-%dT%H:%M:%S' )
+            else
+              Date.strptime( date_string, '%Y-%m-%d' )
+            end
+          when 'float', 'percentage'
+            float_string = cell_node.attributes[ 'office:value' ]
+
+            if float_string.include?( '.' )
+              if floats_as_bigdecimal
+                BigDecimal.new( float_string )
+              else
+                float_string.to_f
+              end
+            else
+              float_string.to_i
+            end
+          when 'boolean'
+            boolean_string = cell_node.attributes[ 'office:boolean-value' ]
+
+            case boolean_string
+            when 'true'
+              true
+            when 'false'
+              false
+            else
+              raise "Invalid boolean value: #{ boolean_string }"
+            end
+          when nil
+            nil
+          else
+            raise "Unrecognized value type found in a cell: #{ value_type }"
+          end
+        end
+
       end
-
-      private
-
 
     end
 
