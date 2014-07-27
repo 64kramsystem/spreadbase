@@ -21,26 +21,44 @@ with SpreadBase.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'rexml/document'
 
-def pretty_print( file_path, output=$stdout )
-  xml_str = IO.read( file_path )
+def decode_cmdline_arguments
+  if ( ARGV & [ '-h', '--help' ] ).any?
+    puts 'Usage: prettify_xml_files.rb <file>[ <file>...]',
+         '',
+         'Formats (overwriting) the files passed.'
+    exit
+  else
+    ARGV.clone
+  end
+end
 
-  root = REXML::Document.new( xml_str )
+def prettify_xml_string( source_xml_content )
+  output_xml_buffer = ''
+
+  root = REXML::Document.new( source_xml_content )
 
   xml_formatter = REXML::Formatters::Pretty.new
   xml_formatter.compact = true
-  xml_formatter.write( root, output )
+  xml_formatter.write( root, output_xml_buffer )
+
+  output_xml_buffer
+end
+
+def prettify_xml_files( filenames )
+  filenames.each do | filename |
+    puts "Prettifying #{ filename }..."
+
+    source_xml_content = IO.read( filename )
+    output_xml_content = prettify_xml_string( source_xml_content )
+
+    IO.write( filename, output_xml_content )
+  end
 
   nil
 end
 
-def prettify_file( file_path )
-  File.open( file_path, 'r+' ) do | file |
-    pretty_print( file_path, file )
-  end
-end
-
 if __FILE__ == $0
-  file_path = ARGV[ 0 ] || raise( "Usage: prettify_file.rb <file>" )
+  filenames = decode_cmdline_arguments
 
-  prettify_file( file_path )
+  prettify_xml_files( filenames )
 end
