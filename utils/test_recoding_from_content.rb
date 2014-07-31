@@ -32,7 +32,7 @@ def test_recoding_from_content( file_path )
     document.document_path = temp_file.path
     document.save( :prettify => true )
 
-    `openoffice.org3 #{ temp_file.path }`
+    open_office_document( temp_file.path )
   end
 end
 

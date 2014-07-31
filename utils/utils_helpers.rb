@@ -23,6 +23,12 @@ require 'zipruby'
 
 module UtilsHelpers
 
+  # Kept trivial; will extend if needed/useful.
+  #
+  def open_office_document( file )
+    `libreoffice '#{ file }'`
+  end
+
   # The file is closed before being passed to the block; even if overwritten, it's deleted when
   # the object is garbage-collected.
   #

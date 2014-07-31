@@ -20,6 +20,9 @@ with SpreadBase.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
 require File.expand_path( '../../lib/spreadbase', __FILE__ )
+require File.expand_path( '../utils_helpers',     __FILE__ )
+
+include UtilsHelpers
 
 def test_recoding_file( file_path )
   destination_file_path = file_path.sub( /\.ods$/, '.2.ods' )
@@ -28,7 +31,7 @@ def test_recoding_file( file_path )
   document.document_path = destination_file_path
   document.save( :prettify => true )
 
-  `openoffice.org3 #{ destination_file_path }`
+  open_office_document( destination_file_path )
 end
 
 if __FILE__ == $0
