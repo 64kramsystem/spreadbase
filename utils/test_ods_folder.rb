@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along
 with SpreadBase.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-require File.expand_path( '../utils_helpers', __FILE__ )
+require File.expand_path( '../utils_helpers', File.realpath(__FILE__) )
 
 include UtilsHelpers
 
