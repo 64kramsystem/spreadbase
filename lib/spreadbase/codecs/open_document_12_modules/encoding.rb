@@ -21,7 +21,6 @@ with SpreadBase.  If not, see <http://www.gnu.org/licenses/>.
 require 'rexml/document'
 require 'date'
 require 'bigdecimal'
-require 'iconv' if RUBY_VERSION < '1.9'
 
 module SpreadBase # :nodoc:
 
@@ -81,7 +80,7 @@ module SpreadBase # :nodoc:
 
         # Returns the XML root node
         #
-        def encode_to_document_node( el_document, options={} )
+        def encode_to_document_node( el_document )
           root_node        = REXML::Document.new( BASE_CONTENT_XML )
           spreadsheet_node = root_node.elements[ '//office:document-content/office:body/office:spreadsheet' ]
           styles_node      = root_node.elements[ '//office:document-content/office:automatic-styles'        ]
@@ -91,7 +90,7 @@ module SpreadBase # :nodoc:
           end
 
           el_document.tables.each do | table |
-            encode_table( table, spreadsheet_node, options )
+            encode_table( table, spreadsheet_node )
           end
 
           root_node
@@ -105,7 +104,7 @@ module SpreadBase # :nodoc:
           style_node.add_element( 'style:table-column-properties', 'style:column-width' => column_width )
         end
 
-        def encode_table( table, spreadsheet_node, options={} )
+        def encode_table( table, spreadsheet_node )
           table_node = spreadsheet_node.add_element( 'table:table' )
 
           table_node.attributes[ 'table:name' ] = table.name
@@ -119,7 +118,7 @@ module SpreadBase # :nodoc:
           table_node.add_element( 'table:table-column' ) if table.column_width_styles.size == 0
 
           table.data( as_cell: true ).each do | row |
-            encode_row( row, table_node, options )
+            encode_row( row, table_node )
           end
         end
 
@@ -129,17 +128,15 @@ module SpreadBase # :nodoc:
           table_node.add_element( 'table:table-column', 'table:style-name' => style_name )
         end
 
-        def encode_row( row, table_node, options={} )
+        def encode_row( row, table_node )
           row_node = table_node.add_element( 'table:table-row' )
 
           row.each do | cell |
-            encode_cell( cell.value, row_node, options )
+            encode_cell( cell.value, row_node )
           end
         end
 
-        def encode_cell( value, row_node, options={} )
-          force_18_strings_encoding = options[ :force_18_strings_encoding ] || 'UTF-8'
-
+        def encode_cell( value, row_node )
           cell_node = row_node.add_element( 'table:table-cell' )
 
           # WATCH OUT!!! DateTime.new.is_a?( Date )!!!
@@ -150,13 +147,7 @@ module SpreadBase # :nodoc:
 
             cell_value_node = cell_node.add_element( 'text:p' )
 
-            if RUBY_VERSION >= '1.9'
-              value = value.encode( 'UTF-8' )
-            else
-              value = Iconv.conv( 'UTF-8', force_18_strings_encoding, value )
-            end
-
-            cell_value_node.text = value
+            cell_value_node.text = value.encode( 'UTF-8' )
           when Time, DateTime
             cell_node.attributes[ 'office:value-type' ] = 'date'
             cell_node.attributes[ 'table:style-name'  ] = 'datetime'

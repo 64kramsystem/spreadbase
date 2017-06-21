@@ -42,7 +42,6 @@ module SpreadBase # :nodoc:
     #
     # _options_:
     #
-    # +force_18_strings_encoding+::   ('UTF-8') on ruby 1.8, when converting to UTF-8, assume the strings are using the specified format.
     # +floats_as_bigdecimal+::        (false) decode floats as BigDecimal instead of Float
     #
     def initialize( document_path=nil, options={} )
