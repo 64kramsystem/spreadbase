@@ -1,4 +1,4 @@
-[![Build Status][BS img]][Build Status]
+[![Build Status][BS img]](https://travis-ci.org/saveriomiroddi/spreadbase)
 
 SpreadBase!!
 ============
