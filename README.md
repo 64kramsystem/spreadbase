@@ -132,12 +132,7 @@ Notes
 
   `SpreadBase::Document.new( "Random numbers für alle!.ods", :floats_as_bigdecimal => true )`
 
-- The archives are always encoded in UTF-8. In Ruby 1.8.7, input strings are assumed to be UTF-8; if not, it's possible to open a document as:
-
-  `SpreadBase::Document.new( "Today's menu.ods", :force_18_strings_encoding => '<encoding>' )`
-
-  in order to override the input encoding.
-- The gem has been tested on Ruby 1.8.7 and 1.9.3-p125, on Linux and Mac OS X.
+- The gem has been tested on Ruby 1.9.3-p125, on Linux and Mac OS X.
 - The column widths are retained (decoding/encoding), but at the current version, they're not [officially] accessible via any API.
 
 Currently unsupported features
