@@ -49,7 +49,6 @@ module SpreadBase # :nodoc:
       #
       # _options_:
       #
-      # +force_18_strings_encoding+::   ('UTF-8') on ruby 1.8, when converting to UTF-8, assume the strings are using the specified format.
       # +prettify+::                    (false )prettifies the content.xml to be human readable.
       #
       # _returns_ the archive as binary string.
@@ -97,7 +96,6 @@ module SpreadBase # :nodoc:
       #
       # _options_:
       #
-      # +force_18_strings_encoding+::   ('UTF-8') on ruby 1.8, when converting to UTF-8, assume the strings are using the specified format.
       # +prettify+::                    (false ) prettifies the content.xml to be human readable.
       #
       # _returns_ content.xml as string.
@@ -107,7 +105,7 @@ module SpreadBase # :nodoc:
       def encode_to_content_xml( el_document, options={} )
         prettify = options[ :prettify ]
 
-        document_xml_root = encode_to_document_node( el_document, options )
+        document_xml_root = encode_to_document_node( el_document )
         document_buffer   = prettify ? pretty_xml( document_xml_root ) : document_xml_root.to_s
 
         document_buffer

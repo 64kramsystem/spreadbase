@@ -111,8 +111,6 @@ describe SpreadBase::Codecs::OpenDocument12 do
   # If values are not converted to UTF-8, some encodings cause an error to be
   # raised when assigning a value to a cell.
   #
-  # 1.8 tests can't be done, since the official platform is 1.9
-  #
   it "should convert to utf-8 before saving" do
     string = "à".encode( 'utf-16' )
 

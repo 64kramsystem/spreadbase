@@ -109,9 +109,6 @@ module SpreadBase # :nodoc:
       when BigDecimal
         value.to_s( 'F' )
       when Time, DateTime
-        # Time#to_s renders differently between 1.8.7 and 1.9.3; 1.8.7's rendering is bizarrely
-        # inconsistent with the Date and DateTime ones.
-        #
         value.strftime( '%Y-%m-%d %H:%M:%S %z' )
       when String, Date, Numeric, TrueClass, FalseClass
         value.to_s
