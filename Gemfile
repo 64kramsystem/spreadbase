@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'zipruby', '~>0.3.6'
 
 group :development do
-  gem 'byebug'
+  gem 'rake'
 end
 
 group :test do
