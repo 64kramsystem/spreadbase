@@ -5,6 +5,15 @@ SpreadBase!!
 
 ... because Excel IS a database.
 
+Status
+------
+
+I'm currently revisiting this project, making a few cleanups and adding an important feature (support for big spreadsheets).
+
+The library itself is stable though, and can be regularly used. I will close any reported bug with higher priority than the other projects of mine.
+
+I plan to add features on request, but if nobody asks for them, this project will be updated very infrequently.
+
 What is SpreadBase©?
 --------------------
 
@@ -142,17 +151,6 @@ Currently unsupported features
 
 - Styles; Date and and [Date]Times are formatted as, respectively, '%Y-%m-%d' and '%Y-%m-%d %H:%M:%S %z'
 - Percentage data type - they're handled using their float value (e.g. 50% = 0.5)
-
-Supporting SpreadBase
----------------------
-
-If you find SpreadBase useful for any reason, I invite you to join Kiva.org, using this invitation:
-
-http://www.kiva.org/invitedby/saveriomiroddi
-
-it will cost you **nothing** (zero/0 €/£/$), it will take three to five minutes of your time, and you will have actively done something for economically disadvantaged countries.
-
-If you want to do more, in addition to accepting the invitation, you can donate to my Paypal account (saverio.pub2 \<a-hat!\> gmail.com) - I will publish your donation and use the entire amount for making loans using the mentioned website.
 
 Roadmap/Todo
 ------------
