@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require File.expand_path('../../lib/spreadbase', __FILE__)
-require File.expand_path('../utils_helpers',     __FILE__)
+require_relative '../lib/spreadbase'
+require_relative 'utils_helpers'
 
 include UtilsHelpers
 

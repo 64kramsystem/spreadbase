@@ -1,7 +1,7 @@
 # encoding: UTF-8
 
-require File.expand_path('../../../lib/spreadbase', __FILE__)
-require File.expand_path('../../spec_helpers',      __FILE__)
+require_relative '../../lib/spreadbase'
+require_relative '../spec_helpers'
 
 require 'date'
 require 'bigdecimal'
