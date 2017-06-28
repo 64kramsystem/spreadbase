@@ -1,23 +1,3 @@
-# encoding: UTF-8
-
-=begin
-Copyright 2012 Saverio Miroddi saverio.pub2 <a-hat!> gmail.com
-
-This file is part of SpreadBase.
-
-SpreadBase is free software: you can redistribute it and/or modify it under the
-terms of the GNU Lesser General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
-
-SpreadBase is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License along
-with SpreadBase.  If not, see <http://www.gnu.org/licenses/>.
-=end
-
 require 'rexml/document'
 require 'date'
 require 'bigdecimal'
@@ -80,17 +60,17 @@ module SpreadBase # :nodoc:
 
         # Returns the XML root node
         #
-        def encode_to_document_node( el_document )
-          root_node        = REXML::Document.new( BASE_CONTENT_XML )
+        def encode_to_document_node(el_document)
+          root_node        = REXML::Document.new(BASE_CONTENT_XML)
           spreadsheet_node = root_node.elements[ '//office:document-content/office:body/office:spreadsheet' ]
           styles_node      = root_node.elements[ '//office:document-content/office:automatic-styles'        ]
 
           el_document.column_width_styles.each do | style_name, column_width |
-            encode_style( styles_node, style_name, column_width )
+            encode_style(styles_node, style_name, column_width)
           end
 
           el_document.tables.each do | table |
-            encode_table( table, spreadsheet_node )
+            encode_table(table, spreadsheet_node)
           end
 
           root_node
@@ -98,46 +78,46 @@ module SpreadBase # :nodoc:
 
         # Currently only encodes column width styles
         #
-        def encode_style( styles_node, style_name, column_width )
-          style_node = styles_node.add_element( 'style:style', 'style:name' => style_name, 'style:family' => 'table-column' )
+        def encode_style(styles_node, style_name, column_width)
+          style_node = styles_node.add_element('style:style', 'style:name' => style_name, 'style:family' => 'table-column')
 
-          style_node.add_element( 'style:table-column-properties', 'style:column-width' => column_width )
+          style_node.add_element('style:table-column-properties', 'style:column-width' => column_width)
         end
 
-        def encode_table( table, spreadsheet_node )
-          table_node = spreadsheet_node.add_element( 'table:table' )
+        def encode_table(table, spreadsheet_node)
+          table_node = spreadsheet_node.add_element('table:table')
 
           table_node.attributes[ 'table:name' ] = table.name
 
           table.column_width_styles.each do | style_name |
-            encode_column( table_node, style_name ) if style_name
+            encode_column(table_node, style_name) if style_name
           end
 
           # At least one column element is required
           #
-          table_node.add_element( 'table:table-column' ) if table.column_width_styles.size == 0
+          table_node.add_element('table:table-column') if table.column_width_styles.size == 0
 
-          table.data( as_cell: true ).each do | row |
-            encode_row( row, table_node )
+          table.data(as_cell: true).each do | row |
+            encode_row(row, table_node)
           end
         end
 
         # Currently only encodes column width styles
         #
-        def encode_column( table_node, style_name )
-          table_node.add_element( 'table:table-column', 'table:style-name' => style_name )
+        def encode_column(table_node, style_name)
+          table_node.add_element('table:table-column', 'table:style-name' => style_name)
         end
 
-        def encode_row( row, table_node )
-          row_node = table_node.add_element( 'table:table-row' )
+        def encode_row(row, table_node)
+          row_node = table_node.add_element('table:table-row')
 
           row.each do | cell |
-            encode_cell( cell.value, row_node )
+            encode_cell(cell.value, row_node)
           end
         end
 
-        def encode_cell( value, row_node )
-          cell_node = row_node.add_element( 'table:table-cell' )
+        def encode_cell(value, row_node)
+          cell_node = row_node.add_element('table:table-cell')
 
           # WATCH OUT!!! DateTime.new.is_a?( Date )!!!
           #
@@ -145,27 +125,27 @@ module SpreadBase # :nodoc:
           when String
             cell_node.attributes[ 'office:value-type' ] = 'string'
 
-            cell_value_node = cell_node.add_element( 'text:p' )
+            cell_value_node = cell_node.add_element('text:p')
 
-            cell_value_node.text = value.encode( 'UTF-8' )
+            cell_value_node.text = value.encode('UTF-8')
           when Time, DateTime
             cell_node.attributes[ 'office:value-type' ] = 'date'
             cell_node.attributes[ 'table:style-name'  ] = 'datetime'
 
-            encoded_value = value.strftime( '%Y-%m-%dT%H:%M:%S' )
+            encoded_value = value.strftime('%Y-%m-%dT%H:%M:%S')
 
             cell_node.attributes[ 'office:date-value' ] = encoded_value
           when Date
             cell_node.attributes[ 'office:value-type' ] = 'date'
             cell_node.attributes[ 'table:style-name'  ] = 'date'
 
-            encoded_value = value.strftime( '%Y-%m-%d' )
+            encoded_value = value.strftime('%Y-%m-%d')
 
             cell_node.attributes[ 'office:date-value' ] = encoded_value
           when BigDecimal
             cell_node.attributes[ 'office:value-type' ] = 'float'
 
-            cell_node.attributes[ 'office:value' ] = value.to_s( 'F' )
+            cell_node.attributes[ 'office:value' ] = value.to_s('F')
           when Float, Fixnum
             cell_node.attributes[ 'office:value-type' ] = 'float'
 

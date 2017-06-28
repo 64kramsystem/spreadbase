@@ -8,11 +8,9 @@ SpreadBase!!
 Status
 ------
 
-I'm currently revisiting this project, making a few cleanups and adding an important feature (support for big spreadsheets).
+The library itself is stable, and can be regularly used.
 
-The library itself is stable though, and can be regularly used. I will close any reported bug with higher priority than the other projects of mine.
-
-I plan to add features on request, but if nobody asks for them, this project will be updated very infrequently.
+I plan to add features on request, but if nobody asks for them, I will update the project very infrequently.
 
 What is SpreadBase©?
 --------------------
