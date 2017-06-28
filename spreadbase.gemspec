@@ -1,6 +1,6 @@
 # encoding: UTF-8
 
-$:.push( File.expand_path( "../lib", __FILE__ ) )
+$LOAD_PATH.push(File.expand_path("../lib", __FILE__))
 
 require "spreadbase/version"
 
@@ -17,8 +17,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency     "zipruby", "~>0.3.6"
   s.add_development_dependency "rspec",   "~>2.9.0"
 
-  s.files         = `git ls-files`.split( "\n" )
-  s.test_files    = `git ls-files -- {spec,temp,utils}/*`.split( "\n" )
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- {spec,temp,utils}/*`.split("\n")
   s.executables   = []
   s.require_paths = [ "lib" ]
 end

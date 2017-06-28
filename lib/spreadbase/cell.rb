@@ -26,12 +26,12 @@ module SpreadBase # :nodoc:
 
     attr_accessor :value
 
-    def initialize( value )
+    def initialize(value)
       @value = value
     end
 
-    def ==( other )
-      other.is_a?( Cell ) && @value == other.value
+    def ==(other)
+      other.is_a?(Cell) && @value == other.value
     end
 
   end
