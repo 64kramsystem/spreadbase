@@ -60,10 +60,10 @@ describe SpreadBase::Document do
     document.tables << SpreadBase::Table.new('Ya-ha!')
     document.document_path = '/tmp/abc.ods'
 
-    codec.should_receive(:encode_to_archive).with(document, :prettify => 'abc').and_return('sob!')
+    codec.should_receive(:encode_to_archive).with(document, prettify: 'abc').and_return('sob!')
     File.should_receive(:open).with('/tmp/abc.ods', 'wb')
 
-    document.save(:prettify => 'abc')
+    document.save(prettify: 'abc')
   end
 
   it "should raise an error when trying to save without a filename" do
@@ -108,7 +108,7 @@ abc:
 
 "
 
-    @sample_document.to_s(:with_headers => true).should == expected_string
+    @sample_document.to_s(with_headers: true).should == expected_string
   end
 
 end

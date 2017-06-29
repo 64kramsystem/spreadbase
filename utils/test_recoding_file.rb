@@ -10,7 +10,7 @@ def test_recoding_file(file_path)
 
   document = SpreadBase::Document.new(file_path)
   document.document_path = destination_file_path
-  document.save(:prettify => true)
+  document.save(prettify: true)
 
   open_office_document(destination_file_path)
 end

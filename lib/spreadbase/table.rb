@@ -125,7 +125,7 @@ module SpreadBase # :nodoc:
     # +row+::                        array of values. if the table is not empty, must have the same size of the table width.
     #
     def insert_row(row_index, row)
-      check_row_index(row_index, :allow_append => true)
+      check_row_index(row_index, allow_append: true)
 
       cells = array_to_cells(row)
 

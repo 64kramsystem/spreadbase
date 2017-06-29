@@ -33,7 +33,7 @@ describe SpreadBase::Codecs::OpenDocument12 do
   it "should encode and decode the sample document" do
     document_archive = SpreadBase::Codecs::OpenDocument12.new.encode_to_archive(@sample_document)
 
-    document = SpreadBase::Codecs::OpenDocument12.new.decode_archive(document_archive, :floats_as_bigdecimal => true)
+    document = SpreadBase::Codecs::OpenDocument12.new.decode_archive(document_archive, floats_as_bigdecimal: true)
 
     assert_size(document.tables, 2) do | table_1, table_2 |
 
@@ -77,7 +77,7 @@ describe SpreadBase::Codecs::OpenDocument12 do
 
     formatter.should_receive(:write)
 
-    SpreadBase::Codecs::OpenDocument12.new.encode_to_archive(@sample_document, :prettify => true)
+    SpreadBase::Codecs::OpenDocument12.new.encode_to_archive(@sample_document, prettify: true)
   end
 
   # Those methods are actually "utility" (read: testing) methods.
@@ -106,7 +106,7 @@ describe SpreadBase::Codecs::OpenDocument12 do
   it "should decode as BigDecimal" do
     content_xml = SpreadBase::Codecs::OpenDocument12.new.encode_to_content_xml(@sample_document)
 
-    document = SpreadBase::Codecs::OpenDocument12.new.decode_content_xml(content_xml, :floats_as_bigdecimal => true)
+    document = SpreadBase::Codecs::OpenDocument12.new.decode_content_xml(content_xml, floats_as_bigdecimal: true)
 
     value = document.tables[ 0 ][ 2, 0 ]
 

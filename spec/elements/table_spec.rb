@@ -316,11 +316,11 @@ describe SpreadBase::Table do
 +------------+---------------------------+---------------------------+
 "
 
-    @sample_table.to_s(:with_headers => true).should == expected_string
+    @sample_table.to_s(with_headers: true).should == expected_string
 
     @sample_table.data = []
 
-    @sample_table.to_s(:with_headers => true).should == ""
+    @sample_table.to_s(with_headers: true).should == ""
   end
 
 end
