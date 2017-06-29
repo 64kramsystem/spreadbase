@@ -15,7 +15,7 @@ end
 # Not sure if 'folder' is an accepted name in the linux world.
 #
 if __FILE__ == $PROGRAM_NAME
-  folder_path = ARGV[ 0 ] || raise("Usage: test_ods_folder.rb <folder>")
+  folder_path = ARGV[0] || raise("Usage: test_ods_folder.rb <folder>")
 
   test_ods_folder(folder_path)
 end

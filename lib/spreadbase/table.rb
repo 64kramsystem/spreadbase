@@ -55,7 +55,7 @@ module SpreadBase # :nodoc:
 
       check_column_index(the_row, column_index)
 
-      the_row[ column_index ]
+      the_row[column_index]
     end
 
     # Writes a value in a cell.
@@ -69,12 +69,12 @@ module SpreadBase # :nodoc:
     def []=(column_identifier, row_index, value)
       check_row_index(row_index)
 
-      the_row      = @data[ row_index ]
+      the_row      = @data[row_index]
       column_index = decode_column_identifier(column_identifier)
 
       check_column_index(the_row, column_index)
 
-      the_row[ column_index ] = value_to_cell(value)
+      the_row[column_index] = value_to_cell(value)
     end
 
     # Returns an array containing the values of a single row.
@@ -87,9 +87,9 @@ module SpreadBase # :nodoc:
       check_row_index(row_index)
 
       if row_index.is_a?(Range)
-        @data[ row_index ].map { | row | cells_to_array(row, options) }
+        @data[row_index].map { | row | cells_to_array(row, options) }
       else
-        cells_to_array(@data[ row_index ], options)
+        cells_to_array(@data[row_index], options)
       end
     end
 
@@ -156,7 +156,7 @@ module SpreadBase # :nodoc:
 
         (min_index..max_index).map do | column_index |
           @data.map do | the_row |
-            cell = the_row[ column_index ]
+            cell = the_row[column_index]
 
             cell_to_value(cell, options)
           end
@@ -165,7 +165,7 @@ module SpreadBase # :nodoc:
         column_index = decode_column_identifier(column_identifier)
 
         @data.map do | the_row |
-          cell = the_row[ column_index ]
+          cell = the_row[column_index]
 
           cell_to_value(cell, options)
         end
@@ -234,7 +234,7 @@ module SpreadBase # :nodoc:
         end
       else
         @data = column.map do | value |
-          [ value_to_cell(value) ]
+          [value_to_cell(value)]
         end
       end
 
@@ -267,7 +267,7 @@ module SpreadBase # :nodoc:
     end
 
     def cell_to_value(cell, options={})
-      as_cell = options[ :as_cell ]
+      as_cell = options[:as_cell]
 
       if as_cell
         cell
@@ -284,7 +284,7 @@ module SpreadBase # :nodoc:
     # +allow_append+::      Allow pointing to one unit above the last row.
     #
     def check_row_index(row_index, options={})
-      allow_append = options [ :allow_append ]
+      allow_append = options [:allow_append]
 
       positive_limit = allow_append ? @data.size : @data.size - 1
 

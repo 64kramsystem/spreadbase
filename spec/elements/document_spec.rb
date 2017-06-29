@@ -10,9 +10,9 @@ describe SpreadBase::Document do
     @sample_document.tables = [
       SpreadBase::Table.new(
         'abc', [
-          [ 1,      1.1,        T_BIGDECIMAL ],
-          [ T_DATE, T_DATETIME, T_TIME       ],
-          [ true,   'a',        nil          ]
+          [1,      1.1,        T_BIGDECIMAL],
+          [T_DATE, T_DATETIME, T_TIME],
+          [true,   'a',        nil]
         ]
       )
     ]

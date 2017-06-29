@@ -18,7 +18,7 @@ def test_recoding_from_content(file_path)
 end
 
 if __FILE__ == $PROGRAM_NAME
-  file_path = ARGV[ 0 ] || raise("Usage: test_recoding_from_content.rb <file>")
+  file_path = ARGV[0] || raise("Usage: test_recoding_from_content.rb <file>")
 
   test_recoding_from_content(file_path)
 end

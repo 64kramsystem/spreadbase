@@ -15,9 +15,9 @@ describe SpreadBase::Codecs::OpenDocument12 do
   before :each do
     table_1 = SpreadBase::Table.new(
       'abc', [
-        [ 1,      1.1,        T_BIGDECIMAL ],
-        [ T_DATE, T_DATETIME, T_TIME       ],
-        [ nil,    'a',        nil          ]
+        [1,      1.1,        T_BIGDECIMAL],
+        [T_DATE, T_DATETIME, T_TIME],
+        [nil,    'a',        nil]
       ]
     )
 
@@ -96,7 +96,7 @@ describe SpreadBase::Codecs::OpenDocument12 do
   it "should convert to utf-8 before saving" do
     string = "à".encode('utf-16')
 
-    @sample_document.tables[ 0 ][ 0,  0 ] = string
+    @sample_document.tables[0][0,  0] = string
 
     # Doesn't encode correctly if the value is not converted
     #
@@ -108,7 +108,7 @@ describe SpreadBase::Codecs::OpenDocument12 do
 
     document = SpreadBase::Codecs::OpenDocument12.new.decode_content_xml(content_xml, floats_as_bigdecimal: true)
 
-    value = document.tables[ 0 ][ 2, 0 ]
+    value = document.tables[0][2, 0]
 
     expect(value).to be_a(BigDecimal)
     expect(value).to eq(T_BIGDECIMAL)

@@ -17,8 +17,8 @@ module UtilsHelpers
   #   :name_prefix    [spreadbase_testing]
   #
   def with_tempfile(options={}, &block)
-    content     = options[ :content     ]
-    name_prefix = options[ :name_prefix ] || 'spreadbase_testing'
+    content     = options[:content]
+    name_prefix = options[:name_prefix] || 'spreadbase_testing'
 
     temp_file = Tempfile.new(name_prefix)
 
@@ -35,7 +35,7 @@ module UtilsHelpers
   #
   def relative_compress_to_zip(folder_path, options={})
     absolute_path = File.expand_path(folder_path) + '/'
-    zip_filename  = options[ :zip_filename ] || File.expand_path(folder_path) + '.zip'
+    zip_filename  = options[:zip_filename] || File.expand_path(folder_path) + '.zip'
 
     absolute_files = Dir.glob(absolute_path + '**/*')
 

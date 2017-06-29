@@ -83,7 +83,7 @@ module SpreadBase # :nodoc:
       # "utility" is a fancy name for testing/utils helper.
       #
       def encode_to_content_xml(el_document, options={})
-        prettify = options[ :prettify ]
+        prettify = options[:prettify]
 
         document_xml_root = encode_to_document_node(el_document)
         document_buffer   = prettify ? pretty_xml(document_xml_root) : document_xml_root.to_s

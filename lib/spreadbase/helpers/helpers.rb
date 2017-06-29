@@ -35,13 +35,13 @@ module SpreadBase # :nodoc:
     # +with_header+::           First row will be separated from the remaining ones.
     #
     def pretty_print_rows(rows, options={})
-      row_prefix   = options[ :row_prefix   ] || ''
-      with_headers = options[ :with_headers ]
+      row_prefix   = options[:row_prefix] || ''
+      with_headers = options[:with_headers]
 
       output = ""
 
       if rows.size > 0
-        max_column_sizes = [ 0 ] * rows.map(&:size).max
+        max_column_sizes = [0] * rows.map(&:size).max
 
         # Compute maximum widths
 
@@ -50,7 +50,7 @@ module SpreadBase # :nodoc:
             formatted_value       = pretty_print_value(value)
             formatted_value_width = formatted_value.chars.to_a.size
 
-            max_column_sizes[ i ] = formatted_value_width if formatted_value_width > max_column_sizes[ i ]
+            max_column_sizes[i] = formatted_value_width if formatted_value_width > max_column_sizes[i]
           end
         end
 
@@ -64,7 +64,7 @@ module SpreadBase # :nodoc:
           # Ensure that we always have a number of values equal to the max width
           #
           formatted_row_values = (0...max_column_sizes.size).map do | column_index |
-            value = row[ column_index ]
+            value = row[column_index]
 
             pretty_print_value(value)
           end

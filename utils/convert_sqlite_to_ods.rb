@@ -5,12 +5,12 @@ require 'sqlite3'
 require 'spreadbase'
 
 def decode_cmdline_params
-  if [ '-h', '--help' ].include?(ARGV[ 0 ]) || ARGV.size == 0 || ARGV.size > 1
+  if ['-h', '--help'].include?(ARGV[0]) || ARGV.size == 0 || ARGV.size > 1
     puts "Usage: convert_sqlite_to_ods.rb <filename>"
 
     exit
   else
-    ARGV[ 0 ]
+    ARGV[0]
   end
 end
 
@@ -43,7 +43,7 @@ def find_tables
     WHERE type = 'table'
   "
 
-  @db.execute(sql).map(&:first) - [ 'sqlite_sequence' ]
+  @db.execute(sql).map(&:first) - ['sqlite_sequence']
 end
 
 # Sample:
@@ -60,7 +60,7 @@ end
 def find_table_columns(table)
   raw_data = @db.table_info(table)
 
-  raw_data.map { | column_data | column_data[ 'name' ] }
+  raw_data.map { | column_data | column_data['name'] }
 end
 
 def create_destination_table(table_name, columns)
@@ -103,7 +103,7 @@ end
 # +insert_headers+::          (true) insert the column names as headers
 #
 def convert_sqlite_to_ods(source_filename, options={})
-  insert_headers = ! options.has_key?(:insert_headers) || options[ :insert_headers ]
+  insert_headers = ! options.has_key?(:insert_headers) || options[:insert_headers]
 
   destination_filename = generate_destination_filename(source_filename)
 
