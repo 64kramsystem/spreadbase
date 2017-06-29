@@ -11,7 +11,7 @@ module SpecHelpers
   # This method is cool beyond any argument about the imperfect name.
   #
   def assert_size(collection, expected_size)
-    collection.size.should == expected_size
+    expect(collection.size).to eql(expected_size)
 
     yield(*collection) if block_given?
   end
@@ -19,7 +19,7 @@ module SpecHelpers
   def stub_initializer(klazz, *args)
     instance = klazz.new(*args)
 
-    klazz.stub!(:new).and_return(instance)
+    allow(klazz).to receive(:new) { instance }
 
     instance
   end

@@ -62,8 +62,8 @@ module SpreadBase # :nodoc:
         #
         def encode_to_document_node(el_document)
           root_node        = REXML::Document.new(BASE_CONTENT_XML)
-          spreadsheet_node = root_node.elements[ '//office:document-content/office:body/office:spreadsheet' ]
-          styles_node      = root_node.elements[ '//office:document-content/office:automatic-styles'        ]
+          spreadsheet_node = root_node.elements['//office:document-content/office:body/office:spreadsheet']
+          styles_node      = root_node.elements['//office:document-content/office:automatic-styles']
 
           el_document.column_width_styles.each do | style_name, column_width |
             encode_style(styles_node, style_name, column_width)
@@ -87,7 +87,7 @@ module SpreadBase # :nodoc:
         def encode_table(table, spreadsheet_node)
           table_node = spreadsheet_node.add_element('table:table')
 
-          table_node.attributes[ 'table:name' ] = table.name
+          table_node.attributes['table:name'] = table.name
 
           table.column_width_styles.each do | style_name |
             encode_column(table_node, style_name) if style_name
@@ -123,38 +123,38 @@ module SpreadBase # :nodoc:
           #
           case value
           when String
-            cell_node.attributes[ 'office:value-type' ] = 'string'
+            cell_node.attributes['office:value-type'] = 'string'
 
             cell_value_node = cell_node.add_element('text:p')
 
             cell_value_node.text = value.encode('UTF-8')
           when Time, DateTime
-            cell_node.attributes[ 'office:value-type' ] = 'date'
-            cell_node.attributes[ 'table:style-name'  ] = 'datetime'
+            cell_node.attributes['office:value-type'] = 'date'
+            cell_node.attributes['table:style-name'] = 'datetime'
 
             encoded_value = value.strftime('%Y-%m-%dT%H:%M:%S')
 
-            cell_node.attributes[ 'office:date-value' ] = encoded_value
+            cell_node.attributes['office:date-value'] = encoded_value
           when Date
-            cell_node.attributes[ 'office:value-type' ] = 'date'
-            cell_node.attributes[ 'table:style-name'  ] = 'date'
+            cell_node.attributes['office:value-type'] = 'date'
+            cell_node.attributes['table:style-name'] = 'date'
 
             encoded_value = value.strftime('%Y-%m-%d')
 
-            cell_node.attributes[ 'office:date-value' ] = encoded_value
+            cell_node.attributes['office:date-value'] = encoded_value
           when BigDecimal
-            cell_node.attributes[ 'office:value-type' ] = 'float'
+            cell_node.attributes['office:value-type'] = 'float'
 
-            cell_node.attributes[ 'office:value' ] = value.to_s('F')
+            cell_node.attributes['office:value'] = value.to_s('F')
           when Float, Fixnum
-            cell_node.attributes[ 'office:value-type' ] = 'float'
+            cell_node.attributes['office:value-type'] = 'float'
 
-            cell_node.attributes[ 'office:value' ] = value.to_s
+            cell_node.attributes['office:value'] = value.to_s
           when true, false
-            cell_node.attributes[ 'office:value-type' ] = 'boolean'
-            cell_node.attributes[ 'table:style-name'  ] = 'boolean'
+            cell_node.attributes['office:value-type'] = 'boolean'
+            cell_node.attributes['table:style-name'] = 'boolean'
 
-            cell_node.attributes[ 'office:boolean-value' ] = value.to_s
+            cell_node.attributes['office:boolean-value'] = value.to_s
           when nil
             # do nothing
           else

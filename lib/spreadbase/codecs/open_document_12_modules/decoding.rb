@@ -34,15 +34,15 @@ module SpreadBase # :nodoc:
         #
         def decode_column_width_styles(style_nodes)
           style_nodes.inject({}) do | column_width_styles, style_node |
-            column_node = style_node.elements[ 'style:table-column-properties' ]
+            column_node = style_node.elements['style:table-column-properties']
 
             if column_node
-              column_width = column_node.attributes[ 'style:column-width' ]
+              column_width = column_node.attributes['style:column-width']
 
               if column_width
-                style_name = style_node.attributes[ 'style:name' ]
+                style_name = style_node.attributes['style:name']
 
-                column_width_styles[ style_name] = column_width
+                column_width_styles[style_name] = column_width
               end
             end
 
@@ -51,7 +51,7 @@ module SpreadBase # :nodoc:
         end
 
         def decode_table_node(table_node, options)
-          table = Table.new(table_node.attributes[ 'table:name' ])
+          table = Table.new(table_node.attributes['table:name'])
 
           column_nodes = table_node.elements.to_a('table:table-column')
           row_nodes    = table_node.elements.to_a('table:table-row')
@@ -65,8 +65,8 @@ module SpreadBase # :nodoc:
         end
 
         def decode_column_width_style(column_node)
-          repetitions = (column_node.attributes[ 'table:number-columns-repeated' ] || '1').to_i
-          style_name  = column_node.attributes[ 'table:style-name' ]
+          repetitions = (column_node.attributes['table:number-columns-repeated'] || '1').to_i
+          style_name  = column_node.attributes['table:style-name']
 
           # WATCH OUT! See module note
           #
@@ -74,7 +74,7 @@ module SpreadBase # :nodoc:
         end
 
         def decode_row_node(row_node, options)
-          repetitions = (row_node.attributes[ 'table:number-rows-repeated' ] || '1').to_i
+          repetitions = (row_node.attributes['table:number-rows-repeated'] || '1').to_i
           cell_nodes  = row_node.elements.to_a('table:table-cell')
 
           # Watch out the :flatten; a single cell can represent multiple cells (table:number-columns-repeated)
@@ -87,23 +87,23 @@ module SpreadBase # :nodoc:
         def decode_cell_node(cell_node, options)
           value = decode_cell_value(cell_node, options)
 
-          repetitions = (cell_node.attributes[ 'table:number-columns-repeated' ] || '1').to_i
+          repetitions = (cell_node.attributes['table:number-columns-repeated'] || '1').to_i
 
           make_array_from_repetitions(value, repetitions)
         end
 
         def decode_cell_value(cell_node, options)
-          floats_as_bigdecimal = options[ :floats_as_bigdecimal ]
+          floats_as_bigdecimal = options[:floats_as_bigdecimal]
 
-          value_type = cell_node.attributes[ 'office:value-type' ]
+          value_type = cell_node.attributes['office:value-type']
 
           case value_type
           when 'string'
-            value_node = cell_node.elements[ 'text:p' ]
+            value_node = cell_node.elements['text:p']
 
             value_node.text
           when 'date'
-            date_string = cell_node.attributes[ 'office:date-value' ]
+            date_string = cell_node.attributes['office:date-value']
 
             if date_string =~ /T/
               DateTime.strptime(date_string, '%Y-%m-%dT%H:%M:%S')
@@ -111,7 +111,7 @@ module SpreadBase # :nodoc:
               Date.strptime(date_string, '%Y-%m-%d')
             end
           when 'float', 'percentage'
-            float_string = cell_node.attributes[ 'office:value' ]
+            float_string = cell_node.attributes['office:value']
 
             if float_string.include?('.')
               if floats_as_bigdecimal
@@ -123,7 +123,7 @@ module SpreadBase # :nodoc:
               float_string.to_i
             end
           when 'boolean'
-            boolean_string = cell_node.attributes[ 'office:boolean-value' ]
+            boolean_string = cell_node.attributes['office:boolean-value']
 
             case boolean_string
             when 'true'

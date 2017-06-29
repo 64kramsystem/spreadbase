@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.name        = "spreadbase"
   s.version     = SpreadBase::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = [ "Saverio Miroddi" ]
-  s.email       = [ "saverio.pub2@gmail.com" ]
+  s.authors     = ["Saverio Miroddi"]
+  s.email       = ["saverio.pub2@gmail.com"]
   s.homepage    = ""
   s.summary     = %q{Library for reading/writing OpenOffice Calc documents.}
   s.description = %q{Library for reading/writing OpenOffice Calc documents.}
@@ -18,5 +18,5 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {spec,temp,utils}/*`.split("\n")
   s.executables   = []
-  s.require_paths = [ "lib" ]
+  s.require_paths = ["lib"]
 end

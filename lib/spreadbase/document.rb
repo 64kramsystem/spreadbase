@@ -64,7 +64,7 @@ module SpreadBase # :nodoc:
     # +with_headers+::        Print the tables with headers.
     #
     def to_s(options={})
-      options.merge!(:row_prefix => '  ')
+      options.merge!(row_prefix: '  ')
 
       tables.inject('') do | output, table |
         output << "#{ table.name }:" << "\n" << "\n"
