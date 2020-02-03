@@ -20,6 +20,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency     "zipruby", "~>0.3.6"
   s.add_development_dependency "rspec",   "~>3.9.0"
 
+  s.add_development_dependency "rake",   "~>13.0"
+
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {spec,temp,utils}/*`.split("\n")
   s.executables   = []
