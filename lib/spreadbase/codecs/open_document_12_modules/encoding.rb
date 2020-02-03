@@ -146,7 +146,7 @@ module SpreadBase # :nodoc:
             cell_node.attributes['office:value-type'] = 'float'
 
             cell_node.attributes['office:value'] = value.to_s('F')
-          when Float, Fixnum
+          when Float, Integer
             cell_node.attributes['office:value-type'] = 'float'
 
             cell_node.attributes['office:value'] = value.to_s

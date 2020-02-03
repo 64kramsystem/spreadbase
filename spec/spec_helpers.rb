@@ -6,7 +6,7 @@ module SpecHelpers
   T_DATE       = Date.new(2012, 4, 10)
   T_DATETIME   = DateTime.new(2012, 4, 11, 23, 33, 42)
   T_TIME       = Time.new(2012, 4, 11, 23, 33, 42, "+02:00")
-  T_BIGDECIMAL = BigDecimal.new('1.33')
+  T_BIGDECIMAL = BigDecimal('1.33')
 
   # This method is cool beyond any argument about the imperfect name.
   #

@@ -304,7 +304,7 @@ module SpreadBase # :nodoc:
     # _returns_ a 0-based decimal number.
     #
     def decode_column_identifier(column_identifier)
-      if column_identifier.is_a?(Fixnum)
+      if column_identifier.is_a?(Integer)
         raise "Negative column indexes not allowed: #{ column_identifier }" if column_identifier < 0
 
         column_identifier

@@ -115,7 +115,7 @@ module SpreadBase # :nodoc:
 
             if float_string.include?('.')
               if floats_as_bigdecimal
-                BigDecimal.new(float_string)
+                BigDecimal(float_string)
               else
                 float_string.to_f
               end
