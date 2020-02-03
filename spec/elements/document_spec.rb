@@ -46,8 +46,6 @@ describe SpreadBase::Document do
   end
 
   it "should initialize with a non-existing file" do
-    codec = stub_initializer(SpreadBase::Codecs::OpenDocument12)
-
     document = SpreadBase::Document.new('/pizza/margerita.txt')
 
     assert_size(document.tables, 0)
