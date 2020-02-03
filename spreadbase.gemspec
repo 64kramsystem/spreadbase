@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.name        = "spreadbase"
   s.version     = SpreadBase::VERSION
   s.platform    = Gem::Platform::RUBY
+  s.required_ruby_version = '>= 2.3.0'
   s.authors     = ["Saverio Miroddi"]
   s.email       = ["saverio.pub2@gmail.com"]
   s.homepage    = ""
