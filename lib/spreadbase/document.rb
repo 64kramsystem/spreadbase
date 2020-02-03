@@ -28,7 +28,7 @@ module SpreadBase # :nodoc:
       @document_path = document_path
       @options       = options.clone
 
-      if @document_path && File.exists?(document_path)
+      if @document_path && File.exist?(document_path)
         document_archive = IO.read(document_path)
         decoded_document = Codecs::OpenDocument12.new.decode_archive(document_archive, options)
 

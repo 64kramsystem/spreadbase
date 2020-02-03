@@ -33,7 +33,7 @@ describe SpreadBase::Document do
   it "should initialize from a file" do
     codec = stub_initializer(SpreadBase::Codecs::OpenDocument12)
 
-    expect(File).to receive(:'exists?').with('/pizza/margerita.txt').and_return(true)
+    expect(File).to receive(:'exist?').with('/pizza/margerita.txt').and_return(true)
     expect(IO).to receive(:read).with('/pizza/margerita.txt').and_return('abc')
     expect(codec).to receive(:decode_archive).with('abc', {}).and_return(@sample_document)
 
