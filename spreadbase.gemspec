@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = %q{Library for reading/writing OpenOffice Calc documents.}
 
   s.add_runtime_dependency     "zipruby", "~>0.3.6"
-  s.add_development_dependency "rspec",   "~>2.9.0"
+  s.add_development_dependency "rspec",   "~>3.9.0"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {spec,temp,utils}/*`.split("\n")
