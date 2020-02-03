@@ -41,7 +41,7 @@ describe SpreadBase::Codecs::OpenDocument12 do
 
         assert_size(row_1, 3) do | value_1, value_2, value_3 |
           expect(value_1).to eq(1)
-          expect(value_1).to be_a(Fixnum)
+          expect(value_1).to be_a(Integer)
           expect(value_2).to eq(1.1)
           expect(value_2).to be_a(BigDecimal)
           expect(value_3).to eq(T_BIGDECIMAL)

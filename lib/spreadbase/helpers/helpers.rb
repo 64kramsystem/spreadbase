@@ -11,7 +11,7 @@ module SpreadBase # :nodoc:
     def make_array_from_repetitions(instance, repetitions)
       (1..repetitions).inject([]) do | cumulative_result, i |
         case instance
-        when Fixnum, Float, BigDecimal, Date, Time, TrueClass, FalseClass, NilClass #, DateTime is a Date
+        when Integer, Float, BigDecimal, Date, Time, TrueClass, FalseClass, NilClass #, DateTime is a Date
           cumulative_result << instance
         when String, Array
           cumulative_result << instance.clone
