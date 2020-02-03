@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 require_relative '../../lib/spreadbase'
 require_relative '../spec_helpers'
 
