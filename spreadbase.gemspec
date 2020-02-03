@@ -10,10 +10,12 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.required_ruby_version = '>= 2.3.0'
   s.authors     = ["Saverio Miroddi"]
+  s.date        = '2019-09-03'
   s.email       = ["saverio.pub2@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/saveriomiroddi/spreadbase"
   s.summary     = %q{Library for reading/writing OpenOffice Calc documents.}
   s.description = %q{Library for reading/writing OpenOffice Calc documents.}
+  s.license     = "GPL-3.0"
 
   s.add_runtime_dependency     "zipruby", "~>0.3.6"
   s.add_development_dependency "rspec",   "~>3.9.0"
