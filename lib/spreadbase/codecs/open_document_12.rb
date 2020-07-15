@@ -1,4 +1,4 @@
-require 'zipruby'
+require 'zip'
 require 'rexml/document'
 
 module SpreadBase # :nodoc:
@@ -37,11 +37,9 @@ module SpreadBase # :nodoc:
         document_buffer = encode_to_content_xml(el_document, options)
         zip_buffer      = ''
 
-        Zip::Archive.open_buffer(zip_buffer, Zip::CREATE) do | zip_file |
-          zip_file.add_dir('META-INF')
-
-          zip_file.add_buffer('META-INF/manifest.xml', MANIFEST_XML);
-          zip_file.add_buffer('content.xml',           document_buffer);
+        Zip::File.open_buffer(zip_buffer) do | zip_file |
+          zip_file.get_output_stream('META-INF/manifest.xml') { |f| f << MANIFEST_XML }
+          zip_file.get_output_stream('content.xml') { |f| f << document_buffer }
         end
 
         zip_buffer
@@ -61,9 +59,8 @@ module SpreadBase # :nodoc:
       # _returns_ the SpreadBase::Document instance.
       #
       def decode_archive(zip_buffer, options={})
-        content_xml_data = Zip::Archive.open_buffer(zip_buffer) do | zip_file |
-          zip_file.fopen('content.xml') { | file | file.read }
-        end
+        io = StringIO.new(zip_buffer)
+        content_xml_data = Zip::File.new(io, false, true).read('content.xml')
 
         decode_content_xml(content_xml_data, options)
       end
