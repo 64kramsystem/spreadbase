@@ -77,19 +77,29 @@ module SpreadBase # :nodoc:
           repetitions = (row_node.attributes['table:number-rows-repeated'] || '1').to_i
           cell_nodes  = row_node.elements.to_a('table:table-cell')
 
-          # Watch out the :flatten; a single cell can represent multiple cells (table:number-columns-repeated)
-          #
-          values = cell_nodes.map { | node | decode_cell_node(node, options) }.flatten
+          values = decode_cell_nodes(cell_nodes, options)
 
           make_array_from_repetitions(values, repetitions)
         end
 
+        def decode_cell_nodes(cell_nodes, options)
+          values = []
+          cell_nodes.inject(0) do |size, node|
+            value, repetitions = decode_cell_node(node, options)
+            unless value.nil?
+              values[size - 1] = nil if size != values.size
+              values.concat(make_array_from_repetitions(value, repetitions))
+            end
+            size + repetitions
+          end
+          values
+        end
+
         def decode_cell_node(cell_node, options)
-          value = decode_cell_value(cell_node, options)
-
-          repetitions = (cell_node.attributes['table:number-columns-repeated'] || '1').to_i
-
-          make_array_from_repetitions(value, repetitions)
+          [
+            decode_cell_value(cell_node, options),
+            (cell_node.attributes['table:number-columns-repeated'] || '1').to_i
+          ]
         end
 
         def decode_cell_value(cell_node, options)
