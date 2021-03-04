@@ -2,6 +2,6 @@ source 'https://rubygems.org'
 
 gemspec
 
-if RUBY_VERSION >= '3.0.0'
+if Gem.ruby_version >= Gem::Version.new('3.0.0')
   gem 'rexml'
 end
