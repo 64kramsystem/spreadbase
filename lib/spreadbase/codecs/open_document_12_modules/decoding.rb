@@ -77,10 +77,7 @@ module SpreadBase # :nodoc:
           rows = []
           row_nodes.inject(0) do |size, node|
             row, repetitions = decode_row_node(node, options)
-            unless row.empty?
-              (size - rows.size).times { rows << [] }
-              rows.concat(make_array_from_repetitions(row, repetitions))
-            end
+            row.empty? || append_row(rows, size, row, repetitions)
             size + repetitions
           end
           rows
@@ -93,17 +90,19 @@ module SpreadBase # :nodoc:
           [decode_cell_nodes(cell_nodes, options), repetitions]
         end
 
+        def append_row(rows, size, row, repetitions)
+          (size - rows.size).times { rows << [] }
+          rows.concat(make_array_from_repetitions(row, repetitions))
+        end
+
         def decode_cell_nodes(cell_nodes, options)
-          values = []
+          cells = []
           cell_nodes.inject(0) do |size, node|
-            value, repetitions = decode_cell_node(node, options)
-            unless value.nil?
-              values[size - 1] = nil if size != values.size
-              values.concat(make_array_from_repetitions(value, repetitions))
-            end
+            cell, repetitions = decode_cell_node(node, options)
+            cell.nil? || append_cell(cells, size, cell, repetitions)
             size + repetitions
           end
-          values
+          cells
         end
 
         def decode_cell_node(cell_node, options)
@@ -111,6 +110,11 @@ module SpreadBase # :nodoc:
             decode_cell_value(cell_node, options),
             (cell_node.attributes['table:number-columns-repeated'] || '1').to_i
           ]
+        end
+
+        def append_cell(cells, size, cell, repetitions)
+          cells[size - 1] = nil if size != cells.size
+          cells.concat(make_array_from_repetitions(cell, repetitions))
         end
 
         def decode_cell_value(cell_node, options)
