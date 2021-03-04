@@ -149,4 +149,53 @@ describe SpreadBase::Codecs::OpenDocument12 do
     end
   end
 
+  context "when cells of the last row are empty" do
+    let(:document_archive) do
+      document = SpreadBase::Document.new
+
+      document.tables << SpreadBase::Table.new(
+        'abc', [
+          []
+        ]
+      )
+
+      document.tables << SpreadBase::Table.new(
+        'def', [
+          [nil]
+        ]
+      )
+
+      document.tables << SpreadBase::Table.new(
+        'ghi', [
+          [nil, nil]
+        ]
+      )
+
+      document.tables << SpreadBase::Table.new(
+        'jkl', [
+          [nil],
+          [1],
+          [nil]
+        ]
+      )
+
+      SpreadBase::Codecs::OpenDocument12.new.encode_to_archive(document)
+    end
+
+    it "should drop such row" do
+      document = SpreadBase::Codecs::OpenDocument12.new.decode_archive(document_archive)
+      tables = document.tables
+
+      assert_size(tables, 4) do |table_1, table_2, table_3, table_4|
+        assert_size(table_1.data, 0)
+
+        assert_size(table_2.data, 0)
+
+        assert_size(table_3.data, 0)
+
+        assert_size(table_4.data, 2)
+      end
+    end
+  end
+
 end

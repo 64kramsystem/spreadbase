@@ -59,7 +59,7 @@ module SpreadBase # :nodoc:
           # A single column/row can represent multiple columns (table:number-(columns|rows)-repeated)
           #
           table.column_width_styles = column_nodes.inject([]) { | current_styles, node | current_styles + decode_column_width_style(node) }
-          table.data                = row_nodes.inject([]) { | current_rows, node | current_rows + decode_row_node(node, options) }
+          table.data                = decode_row_nodes(row_nodes, options)
 
           table
         end
@@ -73,13 +73,24 @@ module SpreadBase # :nodoc:
           make_array_from_repetitions(style_name, repetitions)
         end
 
+        def decode_row_nodes(row_nodes, options)
+          rows = []
+          row_nodes.inject(0) do |size, node|
+            row, repetitions = decode_row_node(node, options)
+            unless row.empty?
+              (size - rows.size).times { rows << [] }
+              rows.concat(make_array_from_repetitions(row, repetitions))
+            end
+            size + repetitions
+          end
+          rows
+        end
+
         def decode_row_node(row_node, options)
           repetitions = (row_node.attributes['table:number-rows-repeated'] || '1').to_i
           cell_nodes  = row_node.elements.to_a('table:table-cell')
 
-          values = decode_cell_nodes(cell_nodes, options)
-
-          make_array_from_repetitions(values, repetitions)
+          [decode_cell_nodes(cell_nodes, options), repetitions]
         end
 
         def decode_cell_nodes(cell_nodes, options)
