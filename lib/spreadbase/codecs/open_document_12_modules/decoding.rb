@@ -59,7 +59,7 @@ module SpreadBase # :nodoc:
           # A single column/row can represent multiple columns (table:number-(columns|rows)-repeated)
           #
           table.column_width_styles = column_nodes.inject([]) { | current_styles, node | current_styles + decode_column_width_style(node) }
-          table.data                = row_nodes.inject([]) { | current_rows, node | current_rows + decode_row_node(node, options) }
+          table.data                = decode_row_nodes(row_nodes, options)
 
           table
         end
@@ -73,23 +73,48 @@ module SpreadBase # :nodoc:
           make_array_from_repetitions(style_name, repetitions)
         end
 
+        def decode_row_nodes(row_nodes, options)
+          rows = []
+          row_nodes.inject(0) do |size, node|
+            row, repetitions = decode_row_node(node, options)
+            row.empty? || append_row(rows, size, row, repetitions)
+            size + repetitions
+          end
+          rows
+        end
+
         def decode_row_node(row_node, options)
           repetitions = (row_node.attributes['table:number-rows-repeated'] || '1').to_i
           cell_nodes  = row_node.elements.to_a('table:table-cell')
 
-          # Watch out the :flatten; a single cell can represent multiple cells (table:number-columns-repeated)
-          #
-          values = cell_nodes.map { | node | decode_cell_node(node, options) }.flatten
+          [decode_cell_nodes(cell_nodes, options), repetitions]
+        end
 
-          make_array_from_repetitions(values, repetitions)
+        def append_row(rows, size, row, repetitions)
+          (size - rows.size).times { rows << [] }
+          rows.concat(make_array_from_repetitions(row, repetitions))
+        end
+
+        def decode_cell_nodes(cell_nodes, options)
+          cells = []
+          cell_nodes.inject(0) do |size, node|
+            cell, repetitions = decode_cell_node(node, options)
+            cell.nil? || append_cell(cells, size, cell, repetitions)
+            size + repetitions
+          end
+          cells
         end
 
         def decode_cell_node(cell_node, options)
-          value = decode_cell_value(cell_node, options)
+          [
+            decode_cell_value(cell_node, options),
+            (cell_node.attributes['table:number-columns-repeated'] || '1').to_i
+          ]
+        end
 
-          repetitions = (cell_node.attributes['table:number-columns-repeated'] || '1').to_i
-
-          make_array_from_repetitions(value, repetitions)
+        def append_cell(cells, size, cell, repetitions)
+          cells[size - 1] = nil if size != cells.size
+          cells.concat(make_array_from_repetitions(cell, repetitions))
         end
 
         def decode_cell_value(cell_node, options)

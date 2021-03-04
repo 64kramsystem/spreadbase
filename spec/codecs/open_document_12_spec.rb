@@ -15,7 +15,7 @@ describe SpreadBase::Codecs::OpenDocument12 do
       'abc', [
         [1,      1.1,        T_BIGDECIMAL],
         [T_DATE, T_DATETIME, T_TIME],
-        [nil,    'a',        nil]
+        [nil,    nil,        'a']
       ]
     )
 
@@ -56,8 +56,8 @@ describe SpreadBase::Codecs::OpenDocument12 do
 
         assert_size(row_3, 3) do | value_1, value_2, value_3 |
           expect(value_1).to eq(nil)
-          expect(value_2).to eq('a')
-          expect(value_3).to eq(nil)
+          expect(value_2).to eq(nil)
+          expect(value_3).to eq('a')
         end
 
       end
@@ -110,6 +110,92 @@ describe SpreadBase::Codecs::OpenDocument12 do
 
     expect(value).to be_a(BigDecimal)
     expect(value).to eq(T_BIGDECIMAL)
+  end
+
+  context "when cells at the end of the row are empty" do
+    let(:document_archive) do
+      document = SpreadBase::Document.new
+
+      document.tables << SpreadBase::Table.new(
+        'abc', [
+          [nil],
+          [nil, nil],
+          [1  , nil],
+          [nil, 1  , nil]
+        ]
+      )
+
+      SpreadBase::Codecs::OpenDocument12.new.encode_to_archive(document)
+    end
+
+    it "should drop such cells" do
+      document = SpreadBase::Codecs::OpenDocument12.new.decode_archive(document_archive)
+      table = document.tables[0]
+
+      assert_size(table.data, 4) do |row_1, row_2, row_3, row_4|
+        assert_size(row_1, 0)
+
+        assert_size(row_2, 0)
+
+        assert_size(row_3, 1) do |value_1|
+          expect(value_1).to eq(1)
+        end
+
+        assert_size(row_4, 2) do |value_1, value_2|
+          expect(value_1).to be_nil
+          expect(value_2).to eq(1)
+        end
+      end
+    end
+  end
+
+  context "when cells of the last row are empty" do
+    let(:document_archive) do
+      document = SpreadBase::Document.new
+
+      document.tables << SpreadBase::Table.new(
+        'abc', [
+          []
+        ]
+      )
+
+      document.tables << SpreadBase::Table.new(
+        'def', [
+          [nil]
+        ]
+      )
+
+      document.tables << SpreadBase::Table.new(
+        'ghi', [
+          [nil, nil]
+        ]
+      )
+
+      document.tables << SpreadBase::Table.new(
+        'jkl', [
+          [nil],
+          [1],
+          [nil]
+        ]
+      )
+
+      SpreadBase::Codecs::OpenDocument12.new.encode_to_archive(document)
+    end
+
+    it "should drop such row" do
+      document = SpreadBase::Codecs::OpenDocument12.new.decode_archive(document_archive)
+      tables = document.tables
+
+      assert_size(tables, 4) do |table_1, table_2, table_3, table_4|
+        assert_size(table_1.data, 0)
+
+        assert_size(table_2.data, 0)
+
+        assert_size(table_3.data, 0)
+
+        assert_size(table_4.data, 2)
+      end
+    end
   end
 
 end
