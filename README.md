@@ -139,9 +139,9 @@ Notes
 - Numbers are decoded to Fixnum or Float, depending on the existence of the fractional part.
   Alternatively, numbers with a fractional part can be decoded as Bigdecimal, using the option:
 
-  `SpreadBase::Document.new( "Random numbers für alle!.ods", :floats_as_bigdecimal => true )`
+  `SpreadBase::Document.new( "Random numbers für alle!.ods", floats_as_bigdecimal: true )`
 
-- The gem has been tested on Ruby 1.9.3-p125, on Linux and Mac OS X.
+- The gem is tested on all the supported Ruby versions (see [Build](https://github.com/saveriomiroddi/spreadbase/actions/workflows/ci.yml)), and used mainly on Linux.
 - The column widths are retained (decoding/encoding), but at the current version, they're not [officially] accessible via any API.
 
 Currently unsupported features
