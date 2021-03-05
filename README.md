@@ -1,4 +1,4 @@
-[![Build Status][BS img]](https://travis-ci.org/saveriomiroddi/spreadbase)
+[![CI](https://github.com/saveriomiroddi/spreadbase/actions/workflows/ci.yml/badge.svg)](https://github.com/saveriomiroddi/spreadbase/actions/workflows/ci.yml)
 
 SpreadBase!!
 ============
@@ -154,5 +154,3 @@ Roadmap/Todo
 ------------
 
 https://github.com/saveriomiroddi/spreadbase/wiki/Todo-%28roadmap%29
-
-[BS img]: https://travis-ci.org/saveriomiroddi/spreadbase.svg?branch=master
