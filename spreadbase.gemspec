@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.required_ruby_version = '>= 2.4.0'
   s.authors     = ["Saverio Miroddi"]
-  s.date        = '2021-03-05'
+  s.date        = '2021-12-31'
   s.email       = ["saverio.pub2@gmail.com"]
   s.homepage    = "https://github.com/saveriomiroddi/spreadbase"
   s.summary     = %q{Library for reading/writing OpenOffice Calc documents.}
