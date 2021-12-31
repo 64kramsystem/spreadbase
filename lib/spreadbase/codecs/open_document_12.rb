@@ -59,8 +59,7 @@ module SpreadBase # :nodoc:
       # _returns_ the SpreadBase::Document instance.
       #
       def decode_archive(zip_buffer, options={})
-        io = StringIO.new(zip_buffer)
-        content_xml_data = Zip::File.new(io, false, true).read('content.xml')
+        content_xml_data = read_content_xml(zip_buffer)
 
         decode_content_xml(content_xml_data, options)
       end
@@ -105,6 +104,22 @@ module SpreadBase # :nodoc:
       end
 
       private
+
+      def read_content_xml(zip_buffer)
+        io = StringIO.new(zip_buffer)
+
+        zip_file = if using_rubyzip_3?
+          Zip::File.new(io, buffer: true)
+        else
+          Zip::File.new(io, false, true)
+        end
+
+        zip_file.read('content.xml')
+      end
+
+      def using_rubyzip_3?
+        Gem.loaded_specs['rubyzip'].version >= Gem::Version.new('3.0.0')
+      end
 
       def pretty_xml(document)
         buffer = ""
