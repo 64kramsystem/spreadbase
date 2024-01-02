@@ -34,7 +34,7 @@ module SpreadBase # :nodoc:
     # +row_prefix+::            Prefix this string to each row.
     # +with_header+::           First row will be separated from the remaining ones.
     #
-    def pretty_print_rows(rows, options={})
+    def pretty_print_rows(rows, **options)
       row_prefix   = options[:row_prefix] || ''
       with_headers = options[:with_headers]
 

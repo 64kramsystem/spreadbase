@@ -102,7 +102,7 @@ end
 # +options+:
 # +insert_headers+::          (true) insert the column names as headers
 #
-def convert_sqlite_to_ods(source_filename, options={})
+def convert_sqlite_to_ods(source_filename, **options)
   insert_headers = ! options.has_key?(:insert_headers) || options[:insert_headers]
 
   destination_filename = generate_destination_filename(source_filename)

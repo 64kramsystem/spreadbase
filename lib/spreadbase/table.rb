@@ -35,8 +35,8 @@ module SpreadBase # :nodoc:
       @data = the_data.map { | the_row | array_to_cells(the_row) }
     end
 
-    def data(options={})
-      @data.map { | the_row | the_row.map { | cell | cell_to_value(cell, options) } }
+    def data(**options)
+      @data.map { | the_row | the_row.map { | cell | cell_to_value(cell, **options) } }
     end
 
     # Access a cell value.
@@ -48,8 +48,8 @@ module SpreadBase # :nodoc:
     #
     # _returns_ the value, which is automatically converted to the Ruby data type.
     #
-    def [](column_identifier, row_index, options={})
-      the_row = row(row_index, options)
+    def [](column_identifier, row_index, **options)
+      the_row = row(row_index, **options)
 
       column_index = decode_column_identifier(column_identifier)
 
@@ -83,13 +83,13 @@ module SpreadBase # :nodoc:
     #
     # +row_index+::                  int or range (0-based). see notes about the rows indexing.
     #
-    def row(row_index, options={})
+    def row(row_index, **options)
       check_row_index(row_index)
 
       if row_index.is_a?(Range)
-        @data[row_index].map { | row | cells_to_array(row, options) }
+        @data[row_index].map { | row | cells_to_array(row, **options) }
       else
-        cells_to_array(@data[row_index], options)
+        cells_to_array(@data[row_index], **options)
       end
     end
 
@@ -149,7 +149,7 @@ module SpreadBase # :nodoc:
     #                                for multiple access, use a range either of int or excel-format identifiers - pay attention, because ( 'A'..'c' ) is not semantically correct.
     #                                interestingly, ruby letter ranges convention is the same as the excel columns one.
     #
-    def column(column_identifier, options={})
+    def column(column_identifier, **options)
       if column_identifier.is_a?(Range)
         min_index = decode_column_identifier(column_identifier.min)
         max_index = decode_column_identifier(column_identifier.max)
@@ -158,7 +158,7 @@ module SpreadBase # :nodoc:
           @data.map do | the_row |
             cell = the_row[column_index]
 
-            cell_to_value(cell, options)
+            cell_to_value(cell, **options)
           end
         end
       else
@@ -167,7 +167,7 @@ module SpreadBase # :nodoc:
         @data.map do | the_row |
           cell = the_row[column_index]
 
-          cell_to_value(cell, options)
+          cell_to_value(cell, **options)
         end
       end
     end
@@ -248,8 +248,8 @@ module SpreadBase # :nodoc:
 
     # _returns_ a matrix representation of the tables, with the values being separated by commas.
     #
-    def to_s(options={})
-      pretty_print_rows(data, options)
+    def to_s(**options)
+      pretty_print_rows(data, **options)
     end
 
     private
@@ -262,11 +262,11 @@ module SpreadBase # :nodoc:
       value.is_a?(Cell) ? value : Cell.new(value)
     end
 
-    def cells_to_array(cells, options={})
-      cells.map { | cell | cell_to_value(cell, options) }
+    def cells_to_array(cells, **options)
+      cells.map { | cell | cell_to_value(cell, **options) }
     end
 
-    def cell_to_value(cell, options={})
+    def cell_to_value(cell, **options)
       as_cell = options[:as_cell]
 
       if as_cell
@@ -283,7 +283,7 @@ module SpreadBase # :nodoc:
     #
     # +allow_append+::      Allow pointing to one unit above the last row.
     #
-    def check_row_index(row_index, options={})
+    def check_row_index(row_index, **options)
       allow_append = options [:allow_append]
 
       positive_limit = allow_append ? @data.size : @data.size - 1
