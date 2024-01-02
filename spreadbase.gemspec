@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.license     = "GPL-3.0"
 
   s.add_runtime_dependency     "rubyzip", ">=2.3.0"
+  s.add_runtime_dependency     "bigdecimal", "~> 3.1", ">= 3.1.5"
   s.add_development_dependency "rspec",   "~>3.12.0"
 
   s.add_development_dependency "rake",   "~>13.0"
