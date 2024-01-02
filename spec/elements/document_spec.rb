@@ -35,7 +35,7 @@ describe SpreadBase::Document do
 
     expect(File).to receive(:'exist?').with('/pizza/margerita.txt').and_return(true)
     expect(IO).to receive(:read).with('/pizza/margerita.txt').and_return('abc')
-    expect(codec).to receive(:decode_archive).with('abc', {}).and_return(@sample_document)
+    expect(codec).to receive(:decode_archive).with('abc').and_return(@sample_document)
 
     document = SpreadBase::Document.new('/pizza/margerita.txt')
 

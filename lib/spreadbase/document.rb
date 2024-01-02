@@ -24,13 +24,13 @@ module SpreadBase # :nodoc:
     #
     # +floats_as_bigdecimal+::        (false) decode floats as BigDecimal instead of Float
     #
-    def initialize(document_path=nil, options={})
+    def initialize(document_path=nil, **options)
       @document_path = document_path
       @options       = options.clone
 
       if @document_path && File.exist?(document_path)
         document_archive = IO.read(document_path)
-        decoded_document = Codecs::OpenDocument12.new.decode_archive(document_archive, options)
+        decoded_document = Codecs::OpenDocument12.new.decode_archive(document_archive, **options)
 
         @column_width_styles = decoded_document.column_width_styles
         @tables              = decoded_document.tables
@@ -48,13 +48,13 @@ module SpreadBase # :nodoc:
     #
     # +prettify+::                   Prettifies the content.xml file before saving.
     #
-    def save(options={})
-      options = @options.merge(options)
+    def save(**options)
+      options = @options.merge(**options)
 
       raise "At least one table must be present" if @tables.empty?
       raise "Document path not specified"        if @document_path.nil?
 
-      document_archive = Codecs::OpenDocument12.new.encode_to_archive(self, options)
+      document_archive = Codecs::OpenDocument12.new.encode_to_archive(self, **options)
 
       File.open(@document_path, 'wb') { | file | file << document_archive }
     end
@@ -63,13 +63,13 @@ module SpreadBase # :nodoc:
     #
     # +with_headers+::        Print the tables with headers.
     #
-    def to_s(options={})
+    def to_s(**options)
       options.merge!(row_prefix: '  ')
 
       tables.inject('') do | output, table |
         output << "#{ table.name }:" << "\n" << "\n"
 
-        output << table.to_s(options) << "\n"
+        output << table.to_s(**options) << "\n"
       end
     end
 

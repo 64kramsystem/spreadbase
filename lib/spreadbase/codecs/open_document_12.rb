@@ -33,8 +33,8 @@ module SpreadBase # :nodoc:
       #
       # _returns_ the archive as binary string.
       #
-      def encode_to_archive(el_document, options={})
-        document_buffer = encode_to_content_xml(el_document, options)
+      def encode_to_archive(el_document, **options)
+        document_buffer = encode_to_content_xml(el_document, **options)
         zip_buffer      = ''
 
         Zip::File.open_buffer(zip_buffer) do | zip_file |
@@ -58,10 +58,10 @@ module SpreadBase # :nodoc:
       #
       # _returns_ the SpreadBase::Document instance.
       #
-      def decode_archive(zip_buffer, options={})
+      def decode_archive(zip_buffer, **options)
         content_xml_data = read_content_xml(zip_buffer)
 
-        decode_content_xml(content_xml_data, options)
+        decode_content_xml(content_xml_data, **options)
       end
 
       # Utility method; encodes the Document to the content.xml format.
@@ -78,7 +78,7 @@ module SpreadBase # :nodoc:
       #--
       # "utility" is a fancy name for testing/utils helper.
       #
-      def encode_to_content_xml(el_document, options={})
+      def encode_to_content_xml(el_document, **options)
         prettify = options[:prettify]
 
         document_xml_root = encode_to_document_node(el_document)
@@ -97,10 +97,10 @@ module SpreadBase # :nodoc:
       #--
       # "utility" is a fancy name for testing/utils helper.
       #
-      def decode_content_xml(content_xml_data, options={})
+      def decode_content_xml(content_xml_data, **options)
         root_node = REXML::Document.new(content_xml_data)
 
-        decode_document_node(root_node, options)
+        decode_document_node(root_node, **options)
       end
 
       private

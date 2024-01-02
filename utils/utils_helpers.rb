@@ -16,7 +16,7 @@ module UtilsHelpers
   #   :content        [nil]
   #   :name_prefix    [spreadbase_testing]
   #
-  def with_tempfile(options={}, &block)
+  def with_tempfile(**options, &block)
     content     = options[:content]
     name_prefix = options[:name_prefix] || 'spreadbase_testing'
 
@@ -33,7 +33,7 @@ module UtilsHelpers
 
   # Create an archive, whose entries' path is relative to the path passed.
   #
-  def relative_compress_to_zip(folder_path, options={})
+  def relative_compress_to_zip(folder_path, **options)
     absolute_path = File.expand_path(folder_path) + '/'
     zip_filename  = options[:zip_filename] || File.expand_path(folder_path) + '.zip'
 

@@ -17,7 +17,7 @@ module SpreadBase # :nodoc:
 
         # Returns a Document instance.
         #
-        def decode_document_node(root_node, options={})
+        def decode_document_node(root_node, **options)
           document = Document.new
 
           style_nodes = root_node.elements.to_a('//office:document-content/office:automatic-styles/style:style')
@@ -25,7 +25,7 @@ module SpreadBase # :nodoc:
 
           document.column_width_styles = decode_column_width_styles(style_nodes)
 
-          document.tables = table_nodes.map { | node | decode_table_node(node, options) }
+          document.tables = table_nodes.map { | node | decode_table_node(node, **options) }
 
           document
         end
@@ -50,7 +50,7 @@ module SpreadBase # :nodoc:
           end
         end
 
-        def decode_table_node(table_node, options)
+        def decode_table_node(table_node, **options)
           table = Table.new(table_node.attributes['table:name'])
 
           column_nodes = table_node.elements.to_a('table:table-column')
@@ -59,7 +59,7 @@ module SpreadBase # :nodoc:
           # A single column/row can represent multiple columns (table:number-(columns|rows)-repeated)
           #
           table.column_width_styles = column_nodes.inject([]) { | current_styles, node | current_styles + decode_column_width_style(node) }
-          table.data                = decode_row_nodes(row_nodes, options)
+          table.data                = decode_row_nodes(row_nodes, **options)
 
           table
         end
@@ -73,21 +73,21 @@ module SpreadBase # :nodoc:
           make_array_from_repetitions(style_name, repetitions)
         end
 
-        def decode_row_nodes(row_nodes, options)
+        def decode_row_nodes(row_nodes, **options)
           rows = []
           row_nodes.inject(0) do |size, node|
-            row, repetitions = decode_row_node(node, options)
+            row, repetitions = decode_row_node(node, **options)
             row.empty? || append_row(rows, size, row, repetitions)
             size + repetitions
           end
           rows
         end
 
-        def decode_row_node(row_node, options)
+        def decode_row_node(row_node, **options)
           repetitions = (row_node.attributes['table:number-rows-repeated'] || '1').to_i
           cell_nodes  = row_node.elements.to_a('table:table-cell')
 
-          [decode_cell_nodes(cell_nodes, options), repetitions]
+          [decode_cell_nodes(cell_nodes, **options), repetitions]
         end
 
         def append_row(rows, size, row, repetitions)
@@ -95,19 +95,19 @@ module SpreadBase # :nodoc:
           rows.concat(make_array_from_repetitions(row, repetitions))
         end
 
-        def decode_cell_nodes(cell_nodes, options)
+        def decode_cell_nodes(cell_nodes, **options)
           cells = []
           cell_nodes.inject(0) do |size, node|
-            cell, repetitions = decode_cell_node(node, options)
+            cell, repetitions = decode_cell_node(node, **options)
             cell.nil? || append_cell(cells, size, cell, repetitions)
             size + repetitions
           end
           cells
         end
 
-        def decode_cell_node(cell_node, options)
+        def decode_cell_node(cell_node, **options)
           [
-            decode_cell_value(cell_node, options),
+            decode_cell_value(cell_node, **options),
             (cell_node.attributes['table:number-columns-repeated'] || '1').to_i
           ]
         end
@@ -117,7 +117,7 @@ module SpreadBase # :nodoc:
           cells.concat(make_array_from_repetitions(cell, repetitions))
         end
 
-        def decode_cell_value(cell_node, options)
+        def decode_cell_value(cell_node, **options)
           floats_as_bigdecimal = options[:floats_as_bigdecimal]
 
           value_type = cell_node.attributes['office:value-type']
