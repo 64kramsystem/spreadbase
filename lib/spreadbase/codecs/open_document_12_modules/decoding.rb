@@ -124,9 +124,9 @@ module SpreadBase # :nodoc:
 
           case value_type
           when 'string'
-            value_node = cell_node.elements['text:p']
-
-            value_node.text
+            cell_node
+              .elements.collect('text:p', &:text)
+              .join("\n")
           when 'date'
             date_string = cell_node.attributes['office:date-value']
 

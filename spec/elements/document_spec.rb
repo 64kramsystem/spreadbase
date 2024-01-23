@@ -115,20 +115,20 @@ abc:
 
     expect(document.tables[0].name).to eq('Sheet1')
     expect(document.tables[0].data).to match([
-      match(['hoge'                                      ]),
-      match([nil   , 'fuga'                              ]),
-      match([nil   , nil   , 'piyo'                      ]),
-      match([nil   , nil   , nil   , 'hogera'            ]),
-      match([nil   , nil   , nil   , nil     , 'hogehoge'])
+      match(['hoge'                                        ]),
+      match([nil   , 'fuga'                                ]),
+      match([nil   , nil   , 'piyo'                        ]),
+      match([nil   , nil   , nil   , 'hogera'              ]),
+      match([nil   , nil   , nil   , nil     , "hoge\nhoge"])
     ])
 
     expect(document.tables[1].name).to eq('Sheet2')
     expect(document.tables[1].data).to match([
-      match([nil  , nil     , nil  , nil  , 'foo']),
-      match([nil  , nil     , nil  , 'bar'       ]),
-      match([nil  , nil     , 'baz'              ]),
-      match([nil  , 'foobar'                     ]),
-      match(['qux'                               ])
+      match([nil       , nil  , nil  , nil  , 'foo']),
+      match([nil       , nil  , nil  , 'bar'       ]),
+      match([nil       , nil  , 'baz'              ]),
+      match([nil       , 'qux'                     ]),
+      match(["foo\nbar"                            ])
     ])
   end
 
